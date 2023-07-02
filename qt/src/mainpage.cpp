@@ -5,15 +5,32 @@ MainPage::MainPage(QWidget *parent)
 {
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    QHBoxLayout* mainLayout = new QHBoxLayout();
-    mainLayout->setSpacing(0);
-    mainLayout->setMargin(0);
+    mainLayout = new QGridLayout();
+    mainLayout->setSpacing(10);
+    mainLayout->setMargin(20);
+
     this->setLayout(mainLayout);
 
-    for(uint8_t i=0; i < 1; i++)
-    {
-        RoomWidget* temp_room = new RoomWidget(this);
+    addWidgetButton = new QPushButton("+", this);
+    addWidgetButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    addWidgetButton->connect(addWidgetButton, SIGNAL(clicked()), this, SLOT(createNewWidget()));
+    addWidgetButton->setGeometry(SCREEN_WIDTH-40, SCREEN_HEIGHT-80, 30, 30);
+}
 
-        mainLayout->addWidget(temp_room);
+void MainPage::createNewWidget()
+{
+    if(widgetsList.length() < 6)
+    {
+        QPushButton* temp_button = new QPushButton("W", this);
+        temp_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        widgetsList.append(temp_button);
+
+        mainLayout->addWidget(temp_button,
+                              (widgetsList.length()-1)/3,
+                              (widgetsList.length()-1)%3
+                              );
+
+        addWidgetButton->raise();
     }
 }
+

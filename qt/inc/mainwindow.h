@@ -3,6 +3,7 @@
 
 #include <QLabel>
 #include <QMainWindow>
+#include <QStackedWidget>
 #include <QTime>
 #include <QTimer>
 
@@ -24,11 +25,18 @@ protected:
     QLabel* timeLabel;
     QTimer* timeUpdate;
 
+    QStackedWidget* navigationStack;
+
     MainPage* mainPage;
     SettingsPage* settingsPage;
     StatusBar* statusBar;
 
 private slots:
     void updateTimeCallback(void);
+
+public slots:
+    void showSettings(void);
+    void showMainPage(void);
+
 };
 #endif // MAINWINDOW_H

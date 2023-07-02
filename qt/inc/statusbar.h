@@ -1,6 +1,7 @@
 #ifndef STATUSBAR_H
 #define STATUSBAR_H
 
+#include <QAction>
 #include <QWidget>
 #include <QToolBar>
 
@@ -14,6 +15,13 @@ public:
 
 protected:
     QWidget* spacer;
+
+private:
+    QAction* homeAction;
+    QAction* energyAction;
+    QAction* networkAction;
+    QAction* notificationAction;
+    QAction* settingsAction;
 
 signals:
 

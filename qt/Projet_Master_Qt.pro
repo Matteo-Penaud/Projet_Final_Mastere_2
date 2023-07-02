@@ -16,6 +16,9 @@ SOURCES += \
     src/settingspage.cpp \
     src/statusbar.cpp
 
+INCLUDEPATH += \
+    inc/
+
 HEADERS += \
     inc/commons.h \
     inc/mainpage.h \

@@ -1,11 +1,14 @@
 #ifndef MAINPAGE_H
 #define MAINPAGE_H
 
-#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QList>
 #include <QPainter>
+#include <QPushButton>
 #include <QWidget>
 
 #include "roomwidget.h"
+#include "commons.h"
 
 class MainPage : public QWidget
 {
@@ -13,8 +16,16 @@ class MainPage : public QWidget
 public:
     explicit MainPage(QWidget *parent = nullptr);
 
+protected:
+    QGridLayout* mainLayout;
+    QList<QWidget*> widgetsList;
+
+    QPushButton* addWidgetButton;
 
 signals:
+
+private slots:
+    void createNewWidget(void);
 
 };
 

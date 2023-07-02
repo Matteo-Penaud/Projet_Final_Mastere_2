@@ -4,13 +4,18 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    this->setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
     timeUpdate = new QTimer(this);
     timeLabel = new QLabel(this);
 
-    mainPage = new MainPage(this);
-    statusBar = new StatusBar(this);
+    navigationStack = new QStackedWidget(this);
 
-    this->setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+    /* Pages creation */
+    mainPage = new MainPage(navigationStack);
+    settingsPage = new SettingsPage(navigationStack);
+
+    statusBar = new StatusBar(this);
 
     this->addToolBar(statusBar);
 
@@ -26,7 +31,10 @@ MainWindow::MainWindow(QWidget *parent)
     timeLabel->setFixedHeight(statusBar->height()+10);
     timeLabel->raise();
 
-    this->setCentralWidget(mainPage);
+    navigationStack->addWidget(mainPage);
+    navigationStack->addWidget(settingsPage);
+    this->showMainPage();
+    this->setCentralWidget(navigationStack);
 }
 
 MainWindow::~MainWindow()
@@ -36,5 +44,15 @@ MainWindow::~MainWindow()
 void MainWindow::updateTimeCallback()
 {
     timeLabel->setText(CURRENT_TIME);
+}
+
+void MainWindow::showSettings()
+{
+    navigationStack->setCurrentWidget(settingsPage);
+}
+
+void MainWindow::showMainPage()
+{
+    navigationStack->setCurrentWidget(mainPage);
 }
 
