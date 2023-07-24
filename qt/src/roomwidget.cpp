@@ -1,35 +1,19 @@
 #include "roomwidget.h"
-
 #include "commons.h"
 
-RoomWidget::RoomWidget(QWidget *parent)
+RoomWidget::RoomWidget(int id, QWidget *parent)
     : QWidget{parent}
 {
-}
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-void RoomWidget::paintEvent(QPaintEvent* event)
-{
-    QPainter painter(this);
-    uint16_t margin = 100;
+    mainLayout = new QGridLayout();
+    mainLayout->setSpacing(10);
+    mainLayout->setMargin(20);
 
-    uint16_t correctWidth = (uint16_t)this->width() - margin*2;
-    uint16_t correctHeight = (uint16_t)this->height() - margin*2;
+    this->setLayout(mainLayout);
 
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(QPen(QBrush(QColor(Qt::black)), 5));
+    testLabel = new QLabel("ROOM" + QString::number(id), this);
+    testLabel->setAlignment(Qt::AlignCenter);
+    mainLayout->addWidget(testLabel);
 
-    painter.fillRect(0, 0, this->width(), this->height(), QBrush(QColor(rand()%255, rand()%255, rand()%255)));
-
-    if(correctWidth > correctHeight)
-    {
-        uint16_t offset = ((correctWidth - correctHeight) / 2) + margin;
-
-        painter.drawEllipse(offset, margin, correctHeight, correctHeight);
-    }
-    else
-    {
-        uint16_t offset = ((correctHeight - correctWidth) / 2) + margin;
-
-        painter.drawEllipse(margin, offset, correctWidth, correctWidth);
-    }
 }

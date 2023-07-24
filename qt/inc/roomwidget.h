@@ -1,19 +1,22 @@
 #ifndef ROOMWIDGET_H
 #define ROOMWIDGET_H
 
-#include <QPainter>
-#include <QPushButton>
+#include <QGridLayout>
 #include <QWidget>
-#include <random>
+#include <QLabel>
+
 
 class RoomWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RoomWidget(QWidget *parent = nullptr);
+    explicit RoomWidget(int id, QWidget *parent = nullptr);
 
 private:
-    void paintEvent(QPaintEvent* event);
+    QGridLayout* mainLayout;
+    QLabel* testLabel;
+
+    QString roomName;
 
 signals:
 

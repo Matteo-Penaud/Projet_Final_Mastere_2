@@ -6,27 +6,31 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QWidget>
+#include <QStackedWidget>
 
 #include "roomwidget.h"
-#include "commons.h"
+#include "roomaccessbutton.h"
 
 class MainPage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MainPage(QWidget *parent = nullptr);
+    explicit MainPage(QStackedWidget *navigationStack, QWidget *parent = nullptr);
 
 protected:
-    QGridLayout* mainLayout;
-    QList<QWidget*> widgetsList;
+    QGridLayout *mainLayout;
+    QList<RoomAccessButton*> widgetsList;
+    QList<RoomWidget*> roomsList;
 
-    QPushButton* addWidgetButton;
+    QPushButton *addWidgetButton;
+
+    QStackedWidget *navigationStack;
 
 signals:
 
 private slots:
     void createNewWidget(void);
-
+    void switchRoom(RoomWidget *room);
 };
 
 #endif // MAINPAGE_H

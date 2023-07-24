@@ -21,6 +21,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    QStackedWidget* getNavigationStack(void);
+
 protected:
     QLabel* timeLabel;
     QTimer* timeUpdate;

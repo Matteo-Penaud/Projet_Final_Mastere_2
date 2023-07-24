@@ -12,7 +12,9 @@ SOURCES += \
     src/main.cpp \
     src/mainpage.cpp \
     src/mainwindow.cpp \
+    src/roomaccessbutton.cpp \
     src/roomwidget.cpp \
+    src/settingsmanager.cpp \
     src/settingspage.cpp \
     src/statusbar.cpp
 
@@ -25,7 +27,9 @@ HEADERS += \
     inc/mainwindow.h \
     inc/roomwidget.h \
     inc/settingspage.h \
-    inc/statusbar.h
+    inc/statusbar.h \
+    inc/settingsmanager.h \
+    inc/roomaccessbutton.h
 
 TRANSLATIONS += \
     Projet_Master_Qt_fr_FR.ts

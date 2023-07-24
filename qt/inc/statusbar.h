@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QToolBar>
 
+#include "commons.h"
+
 #define IS_MOVABLE false
 
 class StatusBar : public QToolBar

@@ -10,8 +10,8 @@ SettingsPage::SettingsPage(QWidget *parent)
     mainLayout->setMargin(this->width()/3);
     this->setLayout(mainLayout);
 
-    test = new QPushButton("Caca", this);
+    shutdownButton = new QPushButton("Shutdown", this);
+    shutdownButton->connect(shutdownButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 
-    mainLayout->addWidget(test);
+    mainLayout->addWidget(shutdownButton);
 }
-

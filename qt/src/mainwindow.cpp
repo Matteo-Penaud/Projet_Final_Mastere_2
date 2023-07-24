@@ -1,4 +1,3 @@
-#include "commons.h"
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -12,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
     navigationStack = new QStackedWidget(this);
 
     /* Pages creation */
-    mainPage = new MainPage(navigationStack);
-    settingsPage = new SettingsPage(navigationStack);
+    mainPage = new MainPage(navigationStack, this);
+    settingsPage = new SettingsPage(this);
 
     statusBar = new StatusBar(this);
 
@@ -39,6 +38,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+}
+
+QStackedWidget* MainWindow::getNavigationStack()
+{
+    return navigationStack;
 }
 
 void MainWindow::updateTimeCallback()
