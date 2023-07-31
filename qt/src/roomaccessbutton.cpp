@@ -8,12 +8,10 @@ RoomAccessButton::RoomAccessButton(QWidget *parent)
 
 RoomWidget *RoomAccessButton::getRoom() const
 {
-    return room;
+    return this->room;
 }
 
 void RoomAccessButton::setRoom(RoomWidget *newRoom)
 {
-    room = newRoom;
+    this->room = newRoom;
 }
-
-

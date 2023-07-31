@@ -16,9 +16,6 @@ public:
 
 private:
     RoomWidget *room;
-
-signals:
-
 };
 
 #endif // ROOMACCESSBUTTON_H

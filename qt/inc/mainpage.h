@@ -30,7 +30,6 @@ signals:
 
 private slots:
     void createNewWidget(void);
-    void switchRoom(RoomWidget *room);
 };
 
 #endif // MAINPAGE_H
