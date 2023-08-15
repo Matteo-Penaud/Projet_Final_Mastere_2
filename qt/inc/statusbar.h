@@ -21,7 +21,7 @@ protected:
 private:
     QAction* homeAction;
     QAction* energyAction;
-    QAction* networkAction;
+    QAction* bluetoothAction;
     QAction* notificationAction;
     QAction* settingsAction;
 

@@ -5,6 +5,7 @@
 StatusBar::StatusBar(QWidget *parent)
     : QToolBar{parent}
 {
+    QIcon::setThemeName("zafiro");
     this->setMovable(IS_MOVABLE);
     this->setAllowedAreas(Qt::TopToolBarArea);
     this->setContextMenuPolicy(Qt::PreventContextMenu);
@@ -17,9 +18,10 @@ StatusBar::StatusBar(QWidget *parent)
 
     energyAction = new QAction(QIcon::fromTheme("battery-good-symbolic"), NULL, this);
 
-    networkAction = new QAction(QIcon::fromTheme("network-wireless-signal-ok-symbolic"), NULL, this);
+    bluetoothAction = new QAction(QIcon::fromTheme("bluetooth-active-symbolic"), NULL, this);
+    bluetoothAction->connect(bluetoothAction, SIGNAL(triggered()), this->parent(), SLOT(showBluetoothManager()));
 
-    notificationAction = new QAction(QIcon::fromTheme("dialog-error-symbolic"), NULL, this);
+//    notificationAction = new QAction(QIcon::fromTheme("dialog-error-symbolic"), NULL, this);
 
     settingsAction = new QAction(QIcon::fromTheme("preferences-system-symbolic"), NULL, this);
     settingsAction->connect(settingsAction, SIGNAL(triggered()), this->parent(), SLOT(showSettings()));
@@ -27,7 +29,7 @@ StatusBar::StatusBar(QWidget *parent)
     this->addAction(homeAction);
     this->addWidget(spacer);
     this->addAction(energyAction);
-    this->addAction(networkAction);
-    this->addAction(notificationAction);
+    this->addAction(bluetoothAction);
+//    this->addAction(notificationAction);
     this->addAction(settingsAction);
 }

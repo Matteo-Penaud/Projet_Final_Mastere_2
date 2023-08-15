@@ -1,7 +1,12 @@
 #include "mainwindow.h"
+#include "commons.h"
+
+#include <qbluetoothaddress.h>
+#include <qbluetoothdevicediscoveryagent.h>
+#include <qbluetoothlocaldevice.h>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent), localDevice(new QBluetoothLocalDevice)
 {
     this->setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -12,9 +17,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     /* Pages creation */
     mainPage = new MainPage(navigationStack, this);
+    bluetoothPage = new BluetoothPage(localDevice, this);
     settingsPage = new SettingsPage(this);
 
     statusBar = new StatusBar(this);
+
+    discoveryAgent = new QBluetoothDeviceDiscoveryAgent();
 
     this->addToolBar(statusBar);
 
@@ -31,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     timeLabel->raise();
 
     navigationStack->addWidget(mainPage);
+    navigationStack->addWidget(bluetoothPage);
     navigationStack->addWidget(settingsPage);
     this->showMainPage();
     this->setCentralWidget(navigationStack);
@@ -38,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete discoveryAgent;
 }
 
 QStackedWidget* MainWindow::getNavigationStack()
@@ -48,6 +58,11 @@ QStackedWidget* MainWindow::getNavigationStack()
 void MainWindow::updateTimeCallback()
 {
     timeLabel->setText(CURRENT_TIME);
+}
+
+void MainWindow::showBluetoothManager()
+{
+    navigationStack->setCurrentWidget(bluetoothPage);
 }
 
 void MainWindow::showSettings()
