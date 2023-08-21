@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     src/bluetoothpage.cpp \
+    src/bluetoothserver.cpp \
     src/main.cpp \
     src/mainpage.cpp \
     src/mainwindow.cpp \
@@ -24,6 +25,7 @@ INCLUDEPATH += \
 
 HEADERS += \
     inc/bluetoothpage.h \
+    inc/bluetoothserver.h \
     inc/commons.h \
     inc/mainpage.h \
     inc/mainwindow.h \

@@ -1,5 +1,5 @@
 #include "roomwidget.h"
-#include "commons.h"
+//#include "commons.h"
 
 RoomWidget::RoomWidget(int id, QWidget *parent)
     : QWidget{parent}

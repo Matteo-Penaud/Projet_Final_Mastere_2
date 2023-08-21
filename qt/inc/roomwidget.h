@@ -4,6 +4,7 @@
 #include <QGridLayout>
 #include <QWidget>
 #include <QLabel>
+#include <QPushButton>
 
 
 class RoomWidget : public QWidget
