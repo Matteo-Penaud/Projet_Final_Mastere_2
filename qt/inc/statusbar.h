@@ -4,6 +4,7 @@
 #include <QAction>
 #include <QWidget>
 #include <QToolBar>
+#include <QLabel>
 
 #include "commons.h"
 
@@ -20,12 +21,16 @@ protected:
 
 private:
     QAction* homeAction;
-    QAction* energyAction;
+    QAction* devAction;
     QAction* bluetoothAction;
     QAction* notificationAction;
     QAction* settingsAction;
 
-signals:
+    QLabel* roomLabel;
+
+public slots:
+    void updateRoomLabel(const QString &roomName);
+
 
 };
 

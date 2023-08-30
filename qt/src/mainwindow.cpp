@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), localDevice(new QBluetoothLocalDevice)
 {
     this->setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+//    this->setWindowState(Qt::WindowFullScreen);
 
     timeUpdate = new QTimer(this);
     timeLabel = new QLabel(this);
@@ -17,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     /* Pages creation */
     mainPage = new MainPage(navigationStack, this);
-    bluetoothPage = new BluetoothPage(localDevice, this);
     settingsPage = new SettingsPage(this);
 
     statusBar = new StatusBar(this);
@@ -39,10 +39,11 @@ MainWindow::MainWindow(QWidget *parent)
     timeLabel->raise();
 
     navigationStack->addWidget(mainPage);
-    navigationStack->addWidget(bluetoothPage);
     navigationStack->addWidget(settingsPage);
     this->showMainPage();
     this->setCentralWidget(navigationStack);
+
+    connect(mainPage, &MainPage::updateRoomName, statusBar, &StatusBar::updateRoomLabel);
 }
 
 MainWindow::~MainWindow()
@@ -58,11 +59,6 @@ QStackedWidget* MainWindow::getNavigationStack()
 void MainWindow::updateTimeCallback()
 {
     timeLabel->setText(CURRENT_TIME);
-}
-
-void MainWindow::showBluetoothManager()
-{
-    navigationStack->setCurrentWidget(bluetoothPage);
 }
 
 void MainWindow::showSettings()

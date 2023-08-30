@@ -1,0 +1,19 @@
+[Icon Theme]
+Name=Fontawesome free
+Comment=fontawesome fonts
+
+PanelDefault=22
+PanelSizes=22
+
+# Directory list
+Directories=brands,solid,
+
+[brands]
+Size=16
+Context=brands
+Type=Fixed
+
+[solid]
+Size=16
+Context=solid
+Type=Fixed

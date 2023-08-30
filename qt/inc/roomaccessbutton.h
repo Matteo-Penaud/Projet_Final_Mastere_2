@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include "roomwidget.h"
+#include "roompage.h"
 
 class RoomAccessButton : public QPushButton
 {
@@ -11,11 +11,11 @@ class RoomAccessButton : public QPushButton
 public:
     explicit RoomAccessButton(QWidget *parent = nullptr);
 
-    RoomWidget *getRoom() const;
-    void setRoom(RoomWidget *newRoom);
+    RoomPage *getRoom() const;
+    void setRoom(RoomPage *newRoom);
 
 private:
-    RoomWidget *room;
+    RoomPage *room;
 };
 
 #endif // ROOMACCESSBUTTON_H

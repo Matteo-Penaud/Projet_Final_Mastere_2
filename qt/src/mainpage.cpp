@@ -32,7 +32,7 @@ void MainPage::createNewWidget()
         QString temp_name = "W" + QString::number(widget_count);
 
         RoomAccessButton *temp_button = new RoomAccessButton(this);
-        RoomWidget *temp_room = new RoomWidget(widget_count, this);
+        RoomPage *temp_room = new RoomPage(widget_count, this);
         temp_button->setRoom(temp_room);
         temp_button->setText(temp_name);
         temp_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -42,8 +42,8 @@ void MainPage::createNewWidget()
         connect(temp_button, &RoomAccessButton::clicked, this->navigationStack,
                 [=](){
                     this->navigationStack->setCurrentWidget(temp_button->getRoom());
+//                    Q_EMIT updateRoomName(temp_room->getRoomName());
                 });
-
 
         this->mainLayout->addWidget(temp_button,
                               (this->widgetsList.length()-1)/3,

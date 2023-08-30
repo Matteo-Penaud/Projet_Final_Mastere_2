@@ -8,7 +8,7 @@
 #include <QWidget>
 #include <QStackedWidget>
 
-#include "roomwidget.h"
+#include "roompage.h"
 #include "roomaccessbutton.h"
 
 class MainPage : public QWidget
@@ -20,13 +20,14 @@ public:
 protected:
     QGridLayout *mainLayout;
     QList<RoomAccessButton*> widgetsList;
-    QList<RoomWidget*> roomsList;
+    QList<RoomPage*> roomsList;
 
     QPushButton *addWidgetButton;
 
     QStackedWidget *navigationStack;
 
 signals:
+    void updateRoomName(const QString &);
 
 private slots:
     void createNewWidget(void);

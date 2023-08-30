@@ -9,12 +9,15 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    src/bluetoothpage.cpp \
-    src/bluetoothserver.cpp \
+    src/bluetoohdevice.cpp \
+    src/bluetoohserviceinfo.cpp \
+    src/bluetoothdeviceinfo.cpp \
+    src/characteristicinfo.cpp \
     src/main.cpp \
     src/mainpage.cpp \
     src/mainwindow.cpp \
     src/roomaccessbutton.cpp \
+    src/roompage.cpp \
     src/roomwidget.cpp \
     src/settingsmanager.cpp \
     src/settingspage.cpp \
@@ -24,8 +27,10 @@ INCLUDEPATH += \
     inc/
 
 HEADERS += \
-    inc/bluetoothpage.h \
-    inc/bluetoothserver.h \
+    inc/bluetoohdevice.h \
+    inc/bluetoohserviceinfo.h \
+    inc/bluetoothdeviceinfo.h \
+    inc/characteristicinfo.h \
     inc/commons.h \
     inc/mainpage.h \
     inc/mainwindow.h \
@@ -33,7 +38,8 @@ HEADERS += \
     inc/settingspage.h \
     inc/statusbar.h \
     inc/settingsmanager.h \
-    inc/roomaccessbutton.h
+    inc/roomaccessbutton.h \
+    inc/roompage.h
 
 TRANSLATIONS += \
     Projet_Master_Qt_fr_FR.ts

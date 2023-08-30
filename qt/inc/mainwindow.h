@@ -9,7 +9,6 @@
 #include <QTime>
 #include <QTimer>
 
-#include "bluetoothpage.h"
 #include "mainpage.h"
 #include "settingspage.h"
 #include "statusbar.h"
@@ -35,7 +34,6 @@ protected:
 
     QStackedWidget* navigationStack;
 
-    BluetoothPage *bluetoothPage;
     MainPage* mainPage;
     SettingsPage* settingsPage;
     StatusBar* statusBar;
@@ -48,7 +46,6 @@ private slots:
     void updateTimeCallback(void);
 
 public slots:
-    void showBluetoothManager(void);
     void showSettings(void);
     void showMainPage(void);
 

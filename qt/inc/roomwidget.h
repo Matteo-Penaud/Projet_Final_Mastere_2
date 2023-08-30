@@ -1,25 +1,38 @@
 #ifndef ROOMWIDGET_H
 #define ROOMWIDGET_H
 
-#include <QGridLayout>
 #include <QWidget>
+#include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
-
+#include <QInputDialog>
+#include "bluetoohdevice.h"
 
 class RoomWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RoomWidget(int id, QWidget *parent = nullptr);
+    explicit RoomWidget(QWidget *parent = nullptr);
+
+    QString getRoomName() const;
+    void setRoomName(const QString &newRoomName);
 
 private:
     QGridLayout* mainLayout;
     QLabel* testLabel;
+    QLabel* statusLabel;
+
+    QPushButton* addModuleButton;
+    QPushButton* removeModuleButton;
 
     QString roomName;
+    QString moduleMac;
 
-signals:
+    BluetoohDevice *device;
+
+private slots:
+    void addModuleSlot(void);
+    void updateBluetoothStatus(QString &);
 
 };
 
