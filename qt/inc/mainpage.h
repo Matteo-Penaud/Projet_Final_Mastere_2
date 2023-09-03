@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QWidget>
 #include <QStackedWidget>
+#include <QCloseEvent>
 
 #include "roompage.h"
 #include "roomaccessbutton.h"
@@ -17,20 +18,23 @@ class MainPage : public QWidget
 public:
     explicit MainPage(QStackedWidget *navigationStack, QWidget *parent = nullptr);
 
-protected:
+private:
     QGridLayout *mainLayout;
     QList<RoomAccessButton*> widgetsList;
     QList<RoomPage*> roomsList;
+    QLabel *emptyRooms;
 
     QPushButton *addWidgetButton;
 
     QStackedWidget *navigationStack;
 
+    void readSettings();
+
 signals:
     void updateRoomName(const QString &);
 
 private slots:
-    void createNewWidget(void);
+    void createNewWidget(const QString &roomName = nullptr);
 };
 
 #endif // MAINPAGE_H

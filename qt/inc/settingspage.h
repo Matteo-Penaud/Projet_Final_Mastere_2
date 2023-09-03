@@ -1,7 +1,7 @@
 #ifndef SETTINGSPAGE_H
 #define SETTINGSPAGE_H
 
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QPushButton>
 #include <QWidget>
 

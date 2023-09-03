@@ -20,7 +20,12 @@ protected:
     QWidget* spacer;
 
 private:
+    //left part
     QAction* homeAction;
+    QAction* backAction;
+    QAction* editAction;
+
+    //right part
     QAction* devAction;
     QAction* bluetoothAction;
     QAction* notificationAction;

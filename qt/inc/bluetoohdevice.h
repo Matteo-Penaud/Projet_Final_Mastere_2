@@ -15,17 +15,20 @@ class BluetoohDevice : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BluetoohDevice(QString name, QString macAddress, QWidget *parent = nullptr);
+    explicit BluetoohDevice(QString name, QString macAddress, QString serviceUuid, QString characteristicUuid, QWidget *parent = nullptr);
     ~BluetoohDevice();
 
     // Fonctions du discoveryAgent (permet de recuperer la cible)
-    void startDeviceDiscovery(void);
     void scanServices();
     bool isRandomAddress() const;
+
+    bool connected = false;
 
 private:
     QString m_macAddress;
     QString m_name;
+    QString m_serviceUuid;
+    QString m_characteristicUuid;
 
     QBluetoothDeviceDiscoveryAgent *discoveryAgent;
     BluetoothDeviceInfo currentDevice;
@@ -36,7 +39,6 @@ private:
     QLowEnergyService *m_service;
     QLowEnergyCharacteristic m_characteristic;
 
-    bool connected = false;
     bool randomAddress = false;
 
     void serviceDetailsDiscovered(QLowEnergyService::ServiceState newState);
@@ -57,12 +59,17 @@ private slots:
     void characteristicUpdated(const QLowEnergyCharacteristic &ch, const QByteArray &newValue);
 
 public slots:
+    void startDeviceDiscovery(void);
     void disconnectFromDevice(void);
     void connectToService(const QString &uuid);
 
 signals:
     void deviceFound(void);
     void changeStatus(QString&);
+    void updateDatas(QString);
+
+    void deviceConnectedSignal(void);
+    void deviceDisconnectedSignal(void);
 };
 
 #endif // BLUETOOHDEVICE_H

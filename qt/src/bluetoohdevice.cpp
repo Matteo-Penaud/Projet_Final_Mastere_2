@@ -5,8 +5,10 @@
 #include "characteristicinfo.h"
 #include "commons.h"
 
-BluetoohDevice::BluetoohDevice(QString name, QString macAddress, QWidget *parent)
-    : QWidget{parent}, m_macAddress(macAddress), m_name(name)
+BluetoohDevice::BluetoohDevice(QString name, QString macAddress, QString serviceUuid, QString characteristicUuid, QWidget *parent)
+    : QWidget{parent},
+    m_macAddress(macAddress), m_name(name),
+    m_serviceUuid(serviceUuid), m_characteristicUuid(characteristicUuid)
 {
     discoveryAgent = new QBluetoothDeviceDiscoveryAgent();
     discoveryAgent->setLowEnergyDiscoveryTimeout(5000);
@@ -16,6 +18,8 @@ BluetoohDevice::BluetoohDevice(QString name, QString macAddress, QWidget *parent
             this, &BluetoohDevice::deviceScanError);
     connect(this, &BluetoohDevice::deviceFound, discoveryAgent, &QBluetoothDeviceDiscoveryAgent::stop);
     connect(discoveryAgent, &QBluetoothDeviceDiscoveryAgent::finished, this, &BluetoohDevice::deviceScanFinished);
+
+    qDebug() << m_serviceUuid << m_characteristicUuid;
 
     startDeviceDiscovery();
 }
@@ -78,25 +82,25 @@ void BluetoohDevice::disconnectFromDevice()
 void BluetoohDevice::deviceScanError(QBluetoothDeviceDiscoveryAgent::Error error)
 {
     if (error == QBluetoothDeviceDiscoveryAgent::PoweredOffError)
-        DEBUG_OUT("The Bluetooth adaptor is powered off, power it on before doing discovery.");
+        qInfo() << "The Bluetooth adaptor is powered off, power it on before doing discovery.";
     else if (error == QBluetoothDeviceDiscoveryAgent::InputOutputError)
-        DEBUG_OUT("Writing or reading from the device resulted in an error.");
+        qInfo() << "Writing or reading from the device resulted in an error.";
     else {
         static QMetaEnum qme = discoveryAgent->metaObject()->enumerator(
             discoveryAgent->metaObject()->indexOfEnumerator("Error"));
-        DEBUG_OUT("Error: " + QLatin1String(qme.valueToKey(error)));
+        qInfo() << "Error: " + QLatin1String(qme.valueToKey(error));
     }
 }
 
 void BluetoohDevice::deviceScanFinished()
 {
-    DEBUG_OUT("Discover ended.");
+    qInfo() << "Discover ended.";
 }
 
 void BluetoohDevice::scanServices()
 {
     if (!currentDevice.getDevice().isValid()) {
-        qWarning() << "Not a valid device";
+        qInfo() << m_macAddress + " : Not a valid device";
         return;
     }
 
@@ -128,7 +132,7 @@ void BluetoohDevice::addLowEnergyService(const QBluetoothUuid &serviceUuid)
     //! [les-service-1]
     QLowEnergyService *service = controller->createServiceObject(serviceUuid);
     if (!service) {
-        qWarning() << "Cannot create service for uuid";
+        qWarning() << m_macAddress + " : Cannot create service for uuid";
         return;
     }
     //! [les-service-1]
@@ -141,9 +145,9 @@ void BluetoohDevice::serviceScanDone()
     // force UI in case we didn't find anything
 //    if (m_services.isEmpty())
 //        emit servicesUpdated();
-    qWarning() << "Services discovered, seeking viable datas...";
+    qInfo() << m_macAddress + " : Services discovered, seeking viable datas...";
 
-    connectToService("00000000-0001-11e1-9ab4-0002a5d5c51b");
+    connectToService(m_serviceUuid);
 }
 
 void BluetoohDevice::connectToService(const QString &uuid)
@@ -162,7 +166,7 @@ void BluetoohDevice::connectToService(const QString &uuid)
 
     if (!m_service)
     {
-        qWarning() << "Error : Unable to find seeked service";
+        qWarning() << m_macAddress + " : Error : Unable to find seeked service";
         return;
     }
 
@@ -185,7 +189,7 @@ void BluetoohDevice::connectToService(const QString &uuid)
     for (const QLowEnergyCharacteristic &ch : chars) {
         auto cInfo = new CharacteristicInfo(ch);
         m_characteristics.append(cInfo);
-        if(cInfo->getUuid() == "00140000-0001-11e1-ac36-0002a5d5c51b")
+        if(cInfo->getUuid() == m_characteristicUuid)
         {
             m_characteristic = ch;
         }
@@ -197,30 +201,34 @@ void BluetoohDevice::connectToService(const QString &uuid)
 void BluetoohDevice::characteristicUpdated(const QLowEnergyCharacteristic &ch, const QByteArray &newValue)
 {
     auto cInfo = new CharacteristicInfo(ch);
-    if(cInfo->getUuid() == "00140000-0001-11e1-ac36-0002a5d5c51b")
+    if(cInfo->getUuid() == m_characteristicUuid)
     {
-        qWarning() << cInfo->getValue();
+        QString data = QString(cInfo->getValue());
+        QString temp = QString(data[6*2]) + data[6*2 +1];
+
+        QString press = QString(data[3*2]) + data[3*2 + 1] + data[2*2] + data[2*2 + 1];
+
+        Q_EMIT updateDatas(
+            QString("Temperature : %1°C"
+                    "\nPressure : %2hPa").arg(
+                    QString::number(temp.toUInt(nullptr, 16)),
+                    QString::number(press.toUInt(nullptr, 16))
+                    )
+        );
+
+        qInfo() << m_macAddress + " : " + data << "Found temp:" << temp.toUInt(nullptr, 16);
     }
 }
 
 
 void BluetoohDevice::serviceDetailsDiscovered(QLowEnergyService::ServiceState newState)
 {
-    if (newState == QLowEnergyService::ServiceDiscovered) {
-        // do not hang in "Scanning for characteristics" mode forever
-        // in case the service discovery failed
-        // We have to queue the signal up to give UI time to even enter
-        // the above mode
-//        if (newState != QLowEnergyService::DiscoveringServices) {
-//            QMetaObject::invokeMethod(this, "characteristicsUpdated",
-//                                      Qt::QueuedConnection);
-//        }
-
-        qWarning() << "Mega prout";
-
+    switch(newState)
+    {
+    case (QLowEnergyService::ServiceDiscovered) :
         const QList<QLowEnergyCharacteristic> chars = m_service->characteristics();
         for (const QLowEnergyCharacteristic &ch : chars) {
-            if(ch.uuid().toString() == "{00140000-0001-11e1-ac36-0002a5d5c51b}")
+            if(ch.uuid().toString() == QString("{%1}").arg(m_characteristicUuid))
             {
                 m_characteristic = ch;
             }
@@ -246,7 +254,6 @@ void BluetoohDevice::serviceDetailsDiscovered(QLowEnergyService::ServiceState ne
 //        {
 ////            qWarning() << cInfo->getValue();
 ////            service->writeCharacteristic(ch, ch.value()  0x10);
-//            qWarning() << "Caca";
 //            qWarning() << ch.properties();
 //        }
 //    }
@@ -257,11 +264,13 @@ void BluetoohDevice::deviceConnected()
 {
     QString temp = QString("Connected to ") + currentDevice.getAddress();
 
-    qWarning() << "Connected to device";
+    qInfo() << m_macAddress +  " : Connected to device";
     Q_EMIT changeStatus(temp);
     connected = true;
 
     controller->discoverServices();
+
+    Q_EMIT deviceConnectedSignal();
 }
 
 void BluetoohDevice::errorReceived(QLowEnergyController::Error /*error*/)
@@ -269,7 +278,7 @@ void BluetoohDevice::errorReceived(QLowEnergyController::Error /*error*/)
     QString temp = QString("Disconnected due to error : " + controller->errorString());
     Q_EMIT changeStatus(temp);
 
-    qWarning() << "Error: " << controller->errorString();
+    qWarning() << m_macAddress + " : Error: " << controller->errorString();
 }
 
 void BluetoohDevice::deviceDisconnected()
@@ -277,7 +286,9 @@ void BluetoohDevice::deviceDisconnected()
     QString temp = QString("Disconnected from device");
     Q_EMIT changeStatus(temp);
 
-    qWarning() << "Disconnect from device";
+    qInfo() << m_macAddress + " : Disconnected from device";
+
+    Q_EMIT deviceDisconnectedSignal();
 }
 
 bool BluetoohDevice::isRandomAddress() const

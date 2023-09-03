@@ -9,7 +9,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), localDevice(new QBluetoothLocalDevice)
 {
     this->setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-//    this->setWindowState(Qt::WindowFullScreen);
+
+#ifdef __arm__
+    this->setWindowState(Qt::WindowFullScreen);
+#endif
 
     timeUpdate = new QTimer(this);
     timeLabel = new QLabel(this);
@@ -18,7 +21,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     /* Pages creation */
     mainPage = new MainPage(navigationStack, this);
+    bluetoothPage = new BluetoothPage(this);
     settingsPage = new SettingsPage(this);
+    devPage = new DevPage(this);
 
     statusBar = new StatusBar(this);
 
@@ -39,7 +44,9 @@ MainWindow::MainWindow(QWidget *parent)
     timeLabel->raise();
 
     navigationStack->addWidget(mainPage);
+    navigationStack->addWidget(bluetoothPage);
     navigationStack->addWidget(settingsPage);
+    navigationStack->addWidget(devPage);
     this->showMainPage();
     this->setCentralWidget(navigationStack);
 
@@ -49,6 +56,13 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete discoveryAgent;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    writeSettings();
+    QMainWindow::closeEvent(event);
+    event->accept();
 }
 
 QStackedWidget* MainWindow::getNavigationStack()
@@ -61,9 +75,15 @@ void MainWindow::updateTimeCallback()
     timeLabel->setText(CURRENT_TIME);
 }
 
-void MainWindow::showSettings()
+void MainWindow::showSettingsPage()
 {
     navigationStack->setCurrentWidget(settingsPage);
+}
+
+void MainWindow::showBluetoothManager()
+{
+    bluetoothPage->updateList();
+    navigationStack->setCurrentWidget(bluetoothPage);
 }
 
 void MainWindow::showMainPage()
@@ -71,3 +91,20 @@ void MainWindow::showMainPage()
     navigationStack->setCurrentWidget(mainPage);
 }
 
+void MainWindow::showDevPage()
+{
+    navigationStack->setCurrentWidget(devPage);
+}
+
+void MainWindow::writeSettings()
+{
+
+}
+
+void MainWindow::readSettings()
+{
+//    LOCAL_SETTINGS
+
+//    settings.beginGroup("MainWindow");
+//    settings.endGroup();
+}

@@ -12,14 +12,15 @@ SOURCES += \
     src/bluetoohdevice.cpp \
     src/bluetoohserviceinfo.cpp \
     src/bluetoothdeviceinfo.cpp \
+    src/bluetoothpage.cpp \
     src/characteristicinfo.cpp \
+    src/devpage.cpp \
     src/main.cpp \
     src/mainpage.cpp \
     src/mainwindow.cpp \
     src/roomaccessbutton.cpp \
     src/roompage.cpp \
     src/roomwidget.cpp \
-    src/settingsmanager.cpp \
     src/settingspage.cpp \
     src/statusbar.cpp
 
@@ -30,14 +31,16 @@ HEADERS += \
     inc/bluetoohdevice.h \
     inc/bluetoohserviceinfo.h \
     inc/bluetoothdeviceinfo.h \
+    inc/bluetoothpage.h \
     inc/characteristicinfo.h \
     inc/commons.h \
+    inc/devpage.h \
+    inc/localsettings.h \
     inc/mainpage.h \
     inc/mainwindow.h \
     inc/roomwidget.h \
     inc/settingspage.h \
     inc/statusbar.h \
-    inc/settingsmanager.h \
     inc/roomaccessbutton.h \
     inc/roompage.h
 

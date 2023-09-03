@@ -1,5 +1,6 @@
 #include "mainpage.h"
 #include "commons.h"
+#include "localsettings.h"
 
 static uint8_t widget_count;
 
@@ -8,28 +9,65 @@ MainPage::MainPage(QStackedWidget *navigationStack, QWidget *parent)
 {
     widget_count = 0;
 
-    this->setGeometry(0, 0, 0, 0);
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setGeometry(0, 0, 0, 0);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    this->mainLayout = new QGridLayout();
-    this->mainLayout->setSpacing(10);
-    this->mainLayout->setMargin(20);
+    mainLayout = new QGridLayout();
+    mainLayout->setSpacing(10);
+    mainLayout->setMargin(20);
 
-    this->setLayout(this->mainLayout);
+    emptyRooms = new QLabel("Create a new room");
+    emptyRooms->setAlignment(Qt::AlignCenter);
+    mainLayout->addWidget(emptyRooms);
 
-    this->addWidgetButton = new QPushButton("+", this);
-    this->addWidgetButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    this->addWidgetButton->connect(this->addWidgetButton, SIGNAL(clicked()), this, SLOT(createNewWidget()));
-    this->addWidgetButton->setGeometry(SCREEN_WIDTH-40, SCREEN_HEIGHT-80, 30, 30);
+    setLayout(this->mainLayout);
+
+    addWidgetButton = new QPushButton("+", this);
+    addWidgetButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    addWidgetButton->connect(addWidgetButton, SIGNAL(clicked()), this, SLOT(createNewWidget()));
+    addWidgetButton->setGeometry(SCREEN_WIDTH-40, SCREEN_HEIGHT-80, 30, 30);
+
+    readSettings();
 }
 
-void MainPage::createNewWidget()
+void MainPage::readSettings()
+{
+    QSettings settings;
+
+    settings.beginGroup(SETTINGS_GROUP_ROOMS);
+        QStringList roomsId = settings.childKeys();
+        roomsId.sort();
+        QStringList rooms;
+        foreach(const QString &id, roomsId)
+        {
+            rooms.append(settings.value(id).toString());
+        }
+    settings.endGroup();
+
+    foreach(const QString &room, rooms)
+    {
+        settings.beginGroup(room);
+            createNewWidget(settings.value(SETTINGS_ROOMS_NAME).toString());
+        settings.endGroup();
+    }
+}
+
+void MainPage::createNewWidget(const QString &roomName)
 {
     if(this->widgetsList.length() < 6)
     {
+        QString temp_name;
+
         widget_count += 1;
 
-        QString temp_name = "W" + QString::number(widget_count);
+        if(roomName != nullptr)
+        {
+            temp_name = roomName;
+        }
+        else
+        {
+            temp_name = "ROOM" + QString::number(widget_count);
+        }
 
         RoomAccessButton *temp_button = new RoomAccessButton(this);
         RoomPage *temp_room = new RoomPage(widget_count, this);
@@ -51,5 +89,9 @@ void MainPage::createNewWidget()
 
         this->addWidgetButton->raise();
     }
-}
 
+    if(widgetsList.length() > 0)
+    {
+        emptyRooms->setVisible(false);
+    }
+}

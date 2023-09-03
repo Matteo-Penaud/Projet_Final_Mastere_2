@@ -1,29 +1,39 @@
 #include "roomwidget.h"
+#include "localsettings.h"
 //#include "commons.h"
 
-RoomWidget::RoomWidget(QWidget *parent)
-    : QWidget{parent}
+RoomWidget::RoomWidget(QString &roomName, QWidget *parent)
+    : QWidget{parent}, roomName(roomName)
 {
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    mainLayout = new QGridLayout();
+    mainLayout = new QVBoxLayout();
     mainLayout->setSpacing(10);
     mainLayout->setMargin(20);
 
     this->setLayout(mainLayout);
 
+    datasLabel = new QLabel("");
+    datasLabel->setAlignment(Qt::AlignCenter);
+    datasLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    mainLayout->addWidget(datasLabel);
+
     statusLabel = new QLabel("No device connected");
-    statusLabel->setAlignment(Qt::AlignCenter);
-    statusLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    statusLabel->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
     mainLayout->addWidget(statusLabel);
 
-    addModuleButton = new QPushButton("Add module", this);
-    connect(addModuleButton, &QPushButton::clicked, this, &RoomWidget::addModuleSlot);
+    attachDeviceButton = new QPushButton("Attach module", this);
 
-    removeModuleButton = new QPushButton("Remove module", this);
+    detachDeviceButton = new QPushButton("Detach module", this);
+    detachDeviceButton->setVisible(false);
 
-    mainLayout->addWidget(addModuleButton);
-    mainLayout->addWidget(removeModuleButton);
+    connect(attachDeviceButton, &QPushButton::clicked, this, &RoomWidget::attachModuleSlot);
+
+    controlsLayout = new QVBoxLayout();
+
+    controlsLayout->addWidget(attachDeviceButton);
+
+    mainLayout->addLayout(controlsLayout);
 }
 
 QString RoomWidget::getRoomName() const
@@ -31,30 +41,95 @@ QString RoomWidget::getRoomName() const
     return roomName;
 }
 
-void RoomWidget::setRoomName(const QString &newRoomName)
+void RoomWidget::setRoomName(QString &newRoomName)
 {
     roomName = newRoomName;
 }
 
-void RoomWidget::addModuleSlot()
+void RoomWidget::attachModuleSlot()
 {
-    moduleMac = QInputDialog::getText(this, tr("Get Bluetooth MAC"),
+    deviceMac = QInputDialog::getText(this, tr("Get Bluetooth MAC"),
                                          tr("Module MAC :"), QLineEdit::Normal,
                                          nullptr, nullptr);
 
-    QString deviceName = QInputDialog::getText(this, tr("Get Bluetooth name"),
+    deviceName = QInputDialog::getText(this, tr("Get Bluetooth name"),
                                                tr("Module name :"), QLineEdit::Normal,
                                                nullptr, nullptr);
 
-    moduleMac = "DE:EF:58:97:1A:75";
-    deviceName = "BlueNRG";
+    if(deviceMac.isEmpty() || deviceName.isEmpty())
+    {
+#ifdef QT_DEBUG
+        qWarning() << "Device mac or name invalid. Using debug values";
+        deviceMac = "DE:EF:58:97:1A:75";
+        deviceName = "BlueNRG";
+#else
+        qWarning() << "Device mac or name invalid.";
+        return;
+#endif
+    }
 
-    device = new BluetoohDevice(deviceName, moduleMac);
+    serviceUuid = "00000000-0001-11e1-9ab4-0002a5d5c51b";
+    characteristicUuid = "00140000-0001-11e1-ac36-0002a5d5c51b";
+
+    if(serviceUuid.isEmpty() || characteristicUuid.isEmpty())
+    {
+        qWarning() << "Service UUID or Characteristic UUID empty";
+        return;
+    }
+
+//F9:03:31:DC:D1:DE
+
+    device = new BluetoohDevice(deviceName, deviceMac, serviceUuid, characteristicUuid);
     connect(device, &BluetoohDevice::changeStatus, this, &RoomWidget::updateBluetoothStatus);
-    connect(removeModuleButton, &QPushButton::clicked, device, &BluetoohDevice::disconnectFromDevice);
+    connect(detachDeviceButton, &QPushButton::clicked, device, &BluetoohDevice::disconnectFromDevice);
+    connect(device, &BluetoohDevice::updateDatas, this, &RoomWidget::updateDatas);
+    connect(device, &BluetoohDevice::deviceConnectedSignal, this, &RoomWidget::saveDeviceConfiguration);
+    connect(device, &BluetoohDevice::deviceDisconnectedSignal, this, &RoomWidget::detachModuleSlot);
+
+    attachDeviceButton->setVisible(false);
+
+    controlsLayout->removeWidget(attachDeviceButton);
+    controlsLayout->insertWidget(0, detachDeviceButton);
+    detachDeviceButton->setVisible(true);
+}
+
+void RoomWidget::detachModuleSlot()
+{
+    detachDeviceButton->setVisible(false);
+
+    controlsLayout->removeWidget(detachDeviceButton);
+    controlsLayout->insertWidget(0, attachDeviceButton);
+    attachDeviceButton->setVisible(true);
+
+    deviceMac.clear();
+    deviceName.clear();
+    delete device;
+}
+
+void RoomWidget::saveDeviceConfiguration()
+{
+    qDebug() << "Writting devices settings...";
+    QSettings settings;
+
+    settings.beginGroup(roomName);
+        settings.beginGroup(SETTINGS_DEVICES_GROUP);
+            settings.beginGroup(deviceMac);
+            settings.setValue("name", deviceName);
+            settings.setValue("service", serviceUuid);
+            settings.setValue("characteristic", characteristicUuid);
+            settings.endGroup();
+        settings.endGroup();
+            settings.endGroup();
+}
+
+void RoomWidget::updateDatas(QString datas)
+{
+    datasLabel->setText(datas);
 }
 
 void RoomWidget::updateBluetoothStatus(QString &status)
 {
     statusLabel->setText(status);
 }
+
+

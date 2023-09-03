@@ -8,10 +8,13 @@
 #include <QStackedWidget>
 #include <QTime>
 #include <QTimer>
+#include <QCloseEvent>
 
 #include "mainpage.h"
 #include "settingspage.h"
+#include "bluetoothpage.h"
 #include "statusbar.h"
+#include "devpage.h"
 
 QT_FORWARD_DECLARE_CLASS(QBluetoothDeviceDiscoveryAgent)
 QT_FORWARD_DECLARE_CLASS(QBluetoothDeviceInfo)
@@ -35,19 +38,27 @@ protected:
     QStackedWidget* navigationStack;
 
     MainPage* mainPage;
+    BluetoothPage* bluetoothPage;
     SettingsPage* settingsPage;
+    DevPage* devPage;
     StatusBar* statusBar;
 
 private:
     QBluetoothDeviceDiscoveryAgent *discoveryAgent;
     QBluetoothLocalDevice *localDevice;
 
+    void readSettings();
+    void writeSettings();
+    void closeEvent(QCloseEvent *event);
+
 private slots:
     void updateTimeCallback(void);
 
 public slots:
-    void showSettings(void);
+    void showSettingsPage(void);
+    void showBluetoothManager(void);
     void showMainPage(void);
+    void showDevPage(void);
 
 };
 #endif // MAINWINDOW_H

@@ -61,9 +61,7 @@ QString CharacteristicInfo::getValue() const
         return result;
     }
 
-    result = a;
-    result += QLatin1Char('\n');
-    result += a.toHex();
+    result = a.toHex();
 
     return result;
 }

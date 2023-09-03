@@ -14,6 +14,7 @@ public:
     explicit RoomPage(int id, QWidget *parent = nullptr);
 
 private:
+    char id;
     QVBoxLayout *mainLayout;
     QHBoxLayout *devicesLayout;
 
@@ -23,6 +24,8 @@ private:
     RoomWidget *a;
     RoomWidget *b;
     RoomWidget *c;
+
+    void settingsAddRoom();
 
 signals:
 
