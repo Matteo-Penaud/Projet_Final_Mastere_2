@@ -1,2 +1,3 @@
 # Projet fin d'études Mastere 2 : Kit WATIHOUSE
-Projet de fin d'études
+
+Ce repo contient les fichiers sources du projet de kit domotique WATIHOUSE
