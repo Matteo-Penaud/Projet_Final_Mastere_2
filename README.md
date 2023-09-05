@@ -4,7 +4,7 @@ gestion et le contrôle d'une maison intelligente. Il comprend une centrale de c
 fois le Bluetooth et le Wi-Fi, permettant une connectivité sans fil polyvalente, ainsi que différents
 modules intelligents et connectés au système
 
-Dans les dossiers /modules et /centrale vous trouverez les codes sources associés aux différents appareils 
+Dans les dossiers /modules et /qt vous trouverez les codes sources associés aux différents appareils 
 
 # Mise en place d'un module 
 - Cloner le dépot sur votre appareil local
@@ -12,6 +12,17 @@ Dans les dossiers /modules et /centrale vous trouverez les codes sources associ�
 - Brancher la STM32L476RG (ou autre carte de ST en vérifiant la configuration matérielle)
 - Flasher la carte
 -> Votre module est prêt à l'emploi !
+
+# Mise en place de la centrale
+- Précompiler une cross-toolchain arm32 contenant les bibliothèques Qt :
+    - cloner Yocto, avec les layers meta-qt5 et meta-raspberrypi
+    - créer une configuration de compilation pour raspberrypi3 ("machine" dans le fichier conf/local.conf)
+    - générer la chaine de cross-compilation (bitbake meta-toolchain-qt5)
+    - configurer QtCreator avec cette chaine de compilation
+- Cloner ce dépôt sur la machine de compilation
+- Ouvrir qt/Projet_Master_Qt.pro dans QtCreator, préalablement configuré
+- Compiler l'application et la transférer sur une Raspberry pi3
+- Ouvrir l'appication sur la cible
 
 # Manuel d'utilisation
 
