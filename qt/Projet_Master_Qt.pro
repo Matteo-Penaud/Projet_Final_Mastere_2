@@ -22,10 +22,15 @@ SOURCES += \
     src/roompage.cpp \
     src/roomwidget.cpp \
     src/settingspage.cpp \
-    src/statusbar.cpp
+    src/statusbar.cpp \
+    src/nfc/CommI2C.cpp \
+    src/nfc/CommSPI.cpp \
+    src/nfc/CommUART.cpp \
+    src/nfc/MFRC522.cpp \
 
 INCLUDEPATH += \
-    inc/
+    inc/ \
+    inc/nfc/
 
 HEADERS += \
     inc/bluetoohdevice.h \
@@ -42,7 +47,9 @@ HEADERS += \
     inc/settingspage.h \
     inc/statusbar.h \
     inc/roomaccessbutton.h \
-    inc/roompage.h
+    inc/roompage.h \
+    inc/nfc/Comm.h \
+    inc/nfc/MFRC522.h \
 
 TRANSLATIONS += \
     Projet_Master_Qt_fr_FR.ts
@@ -56,5 +63,3 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resources.qrc
-
-FORMS +=

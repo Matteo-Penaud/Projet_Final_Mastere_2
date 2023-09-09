@@ -1,5 +1,7 @@
 #include "roomwidget.h"
 #include "localsettings.h"
+#include "MFRC522.h"
+#include <unistd.h>
 //#include "commons.h"
 
 RoomWidget::RoomWidget(QString &roomName, QWidget *parent)
@@ -48,6 +50,32 @@ void RoomWidget::setRoomName(QString &newRoomName)
 
 void RoomWidget::attachModuleSlot()
 {
+//    MFRC522 *nfc_handler = new MFRC522(new CommSPI());
+//    nfc_handler->PCD_Init();
+//    nfc_handler->PCD_DumpVersionToSerial();
+
+//    while(1)
+//    {
+//        usleep(1000);
+
+//        // Look for new cards
+//        if (!nfc_handler->PICC_IsNewCardPresent())
+//        {
+//            continue;
+//        }
+
+//        // Select one of the cards
+//        if (!nfc_handler->PICC_ReadCardSerial())
+//        {
+//            continue;
+//        }
+
+//        // Dump debug info about the card; PICC_HaltA() is automatically called
+//        nfc_handler->PICC_DumpToSerial(&(nfc_handler->uid));
+
+
+//    }
+
     deviceMac = QInputDialog::getText(this, tr("Get Bluetooth MAC"),
                                          tr("Module MAC :"), QLineEdit::Normal,
                                          nullptr, nullptr);
@@ -67,6 +95,8 @@ void RoomWidget::attachModuleSlot()
         return;
 #endif
     }
+
+
 
     serviceUuid = "00000000-0001-11e1-9ab4-0002a5d5c51b";
     characteristicUuid = "00140000-0001-11e1-ac36-0002a5d5c51b";
