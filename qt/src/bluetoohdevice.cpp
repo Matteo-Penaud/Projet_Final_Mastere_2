@@ -20,8 +20,6 @@ BluetoohDevice::BluetoohDevice(QString name, QString macAddress, QString service
     connect(discoveryAgent, &QBluetoothDeviceDiscoveryAgent::finished, this, &BluetoohDevice::deviceScanFinished);
 
     qDebug() << m_serviceUuid << m_characteristicUuid;
-
-    startDeviceDiscovery();
 }
 
 BluetoohDevice::~BluetoohDevice()
@@ -32,12 +30,13 @@ BluetoohDevice::~BluetoohDevice()
 
 void BluetoohDevice::startDeviceDiscovery()
 {
+    QString temp;
+
     discoveryAgent->start(QBluetoothDeviceDiscoveryAgent::LowEnergyMethod);
-    QString temp = QString("Discovering devices...");
-    Q_EMIT changeStatus(temp);
 
     if (discoveryAgent->isActive()) {
-        DEBUG_OUT("Discovering...");
+        temp = "Discovering devices...";
+        Q_EMIT changeStatus(temp);
     }
 }
 
@@ -72,7 +71,7 @@ void BluetoohDevice::disconnectFromDevice()
     QString temp = QString("User requested disconnect...");
     Q_EMIT changeStatus(temp);
 
-    if (controller->state() != QLowEnergyController::UnconnectedState)
+    if (controller != NULL && controller->state() != QLowEnergyController::UnconnectedState)
         controller->disconnectFromDevice();
     else
         deviceDisconnected();
@@ -81,14 +80,25 @@ void BluetoohDevice::disconnectFromDevice()
 
 void BluetoohDevice::deviceScanError(QBluetoothDeviceDiscoveryAgent::Error error)
 {
+    QString temp;
+
     if (error == QBluetoothDeviceDiscoveryAgent::PoweredOffError)
+    {
         qInfo() << "The Bluetooth adaptor is powered off, power it on before doing discovery.";
+
+        temp = QString("Error : Bluetooth adapter is not powerd on");
+    }
     else if (error == QBluetoothDeviceDiscoveryAgent::InputOutputError)
         qInfo() << "Writing or reading from the device resulted in an error.";
     else {
         static QMetaEnum qme = discoveryAgent->metaObject()->enumerator(
             discoveryAgent->metaObject()->indexOfEnumerator("Error"));
         qInfo() << "Error: " + QLatin1String(qme.valueToKey(error));
+    }
+
+    if(!temp.isEmpty())
+    {
+        Q_EMIT changeStatus(temp);
     }
 }
 
@@ -119,12 +129,15 @@ void BluetoohDevice::scanServices()
                 this, &BluetoohDevice::serviceScanDone);
     }
 
-    if (isRandomAddress())
-        controller->setRemoteAddressType(QLowEnergyController::RandomAddress);
-    else
-        controller->setRemoteAddressType(QLowEnergyController::PublicAddress);
+    if(controller)
+    {
+        if (isRandomAddress())
+            controller->setRemoteAddressType(QLowEnergyController::RandomAddress);
+        else
+            controller->setRemoteAddressType(QLowEnergyController::PublicAddress);
 
-    controller->connectToDevice();
+        controller->connectToDevice();
+    }
 }
 
 void BluetoohDevice::addLowEnergyService(const QBluetoothUuid &serviceUuid)

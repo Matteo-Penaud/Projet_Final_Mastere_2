@@ -37,14 +37,25 @@ private:
     QPushButton *attachDeviceButton;
     QPushButton *detachDeviceButton;
 
+    bool isNFCReading = false;
+
 private slots:
+    void resetNFCReading(void);
+    void requestNFCTag(void);
+
     void attachModuleSlot(void);
+    void moduleAttachedSlot(void);
     void detachModuleSlot(void);
 
     void saveDeviceConfiguration(void);
 
     void updateDatas(QString);
     void updateBluetoothStatus(QString &);
+
+    void resetAll(void);
+
+signals:
+    void nfcRead(void);
 
 };
 

@@ -2,6 +2,7 @@
 #include "localsettings.h"
 #include "MFRC522.h"
 #include <unistd.h>
+#include <QCoreApplication>
 //#include "commons.h"
 
 RoomWidget::RoomWidget(QString &roomName, QWidget *parent)
@@ -48,44 +49,80 @@ void RoomWidget::setRoomName(QString &newRoomName)
     roomName = newRoomName;
 }
 
-void RoomWidget::attachModuleSlot()
+void RoomWidget::resetNFCReading()
 {
-//    MFRC522 *nfc_handler = new MFRC522(new CommSPI());
-//    nfc_handler->PCD_Init();
-//    nfc_handler->PCD_DumpVersionToSerial();
+    isNFCReading = false;
+}
 
-//    while(1)
-//    {
-//        usleep(1000);
+void RoomWidget::requestNFCTag()
+{
+#ifdef __arm__
+    MFRC522 *nfc_handler = new MFRC522(new CommSPI());
+    nfc_handler->PCD_Init();
+    nfc_handler->PCD_DumpVersionToSerial();
+#endif
 
-//        // Look for new cards
-//        if (!nfc_handler->PICC_IsNewCardPresent())
-//        {
-//            continue;
-//        }
+    QTimer::singleShot(30000, this, &RoomWidget::resetNFCReading);
 
-//        // Select one of the cards
-//        if (!nfc_handler->PICC_ReadCardSerial())
-//        {
-//            continue;
-//        }
+    datasLabel->setText("NFC Quick Pairing :\napproach module tag...");
 
-//        // Dump debug info about the card; PICC_HaltA() is automatically called
-//        nfc_handler->PICC_DumpToSerial(&(nfc_handler->uid));
+#ifdef __arm__
+    isNFCReading = true;
+    while(isNFCReading)
+    {
+        MFRC522::StatusCode status;
+        byte byteCount;
+        byte buffer[18];
 
+        usleep(1000);
 
-//    }
+        // Look for new cards
+        if (!nfc_handler->PICC_IsNewCardPresent())
+        {
+            continue;
+        }
 
-    deviceMac = QInputDialog::getText(this, tr("Get Bluetooth MAC"),
-                                         tr("Module MAC :"), QLineEdit::Normal,
-                                         nullptr, nullptr);
+        // Select one of the cards
+        if (!nfc_handler->PICC_ReadCardSerial())
+        {
+            continue;
+        }
 
-    deviceName = QInputDialog::getText(this, tr("Get Bluetooth name"),
-                                               tr("Module name :"), QLineEdit::Normal,
-                                               nullptr, nullptr);
+        nfc_handler->PICC_DumpDetailsToSerial(&(nfc_handler->uid));
+
+        if (nfc_handler->uid.sak == nfc_handler->PICC_TYPE_MIFARE_UL)
+        {
+            for(byte page = 0; page < 16; page += 4)
+            {
+                status = nfc_handler->MIFARE_Read(page, buffer, &byteCount);
+                qInfo() << nfc_handler->GetStatusCodeName(status);
+            }
+
+            isNFCReading = false;
+            break;
+        }
+
+        QCoreApplication::processEvents();
+    }
+#endif
+}
+
+void RoomWidget::attachModuleSlot()
+{   
+    requestNFCTag();
+
+    datasLabel->clear();
 
     if(deviceMac.isEmpty() || deviceName.isEmpty())
     {
+        deviceMac = QInputDialog::getText(this, tr("Get Bluetooth MAC"),
+                                             tr("Module MAC :"), QLineEdit::Normal,
+                                             nullptr, nullptr);
+
+        deviceName = QInputDialog::getText(this, tr("Get Bluetooth name"),
+                                                   tr("Module name :"), QLineEdit::Normal,
+                                                   nullptr, nullptr);
+
 #ifdef QT_DEBUG
         qWarning() << "Device mac or name invalid. Using debug values";
         deviceMac = "DE:EF:58:97:1A:75";
@@ -95,8 +132,6 @@ void RoomWidget::attachModuleSlot()
         return;
 #endif
     }
-
-
 
     serviceUuid = "00000000-0001-11e1-9ab4-0002a5d5c51b";
     characteristicUuid = "00140000-0001-11e1-ac36-0002a5d5c51b";
@@ -110,17 +145,34 @@ void RoomWidget::attachModuleSlot()
 //F9:03:31:DC:D1:DE
 
     device = new BluetoohDevice(deviceName, deviceMac, serviceUuid, characteristicUuid);
-    connect(device, &BluetoohDevice::changeStatus, this, &RoomWidget::updateBluetoothStatus);
-    connect(detachDeviceButton, &QPushButton::clicked, device, &BluetoohDevice::disconnectFromDevice);
-    connect(device, &BluetoohDevice::updateDatas, this, &RoomWidget::updateDatas);
-    connect(device, &BluetoohDevice::deviceConnectedSignal, this, &RoomWidget::saveDeviceConfiguration);
-    connect(device, &BluetoohDevice::deviceDisconnectedSignal, this, &RoomWidget::detachModuleSlot);
 
+    if(device)
+    {
+        connect(device, &BluetoohDevice::changeStatus, this, &RoomWidget::updateBluetoothStatus);
+        connect(detachDeviceButton, &QPushButton::clicked, device, &BluetoohDevice::disconnectFromDevice);
+        connect(device, &BluetoohDevice::updateDatas, this, &RoomWidget::updateDatas);
+        connect(device, &BluetoohDevice::deviceConnectedSignal, this, &RoomWidget::moduleAttachedSlot);
+        connect(device, &BluetoohDevice::deviceDisconnectedSignal, this, &RoomWidget::detachModuleSlot);
+
+        device->startDeviceDiscovery();
+    }
+    else
+    {
+        QString temp = QString("Error in device creation : device empty.");
+        qWarning() << temp;
+        statusLabel->setText(temp);
+    }
+}
+
+void RoomWidget::moduleAttachedSlot()
+{
     attachDeviceButton->setVisible(false);
 
     controlsLayout->removeWidget(attachDeviceButton);
     controlsLayout->insertWidget(0, detachDeviceButton);
     detachDeviceButton->setVisible(true);
+
+    saveDeviceConfiguration();
 }
 
 void RoomWidget::detachModuleSlot()
@@ -160,6 +212,15 @@ void RoomWidget::updateDatas(QString datas)
 void RoomWidget::updateBluetoothStatus(QString &status)
 {
     statusLabel->setText(status);
+}
+
+void RoomWidget::resetAll()
+{
+    deviceMac.clear();
+    deviceName.clear();
+    serviceUuid.clear();
+    characteristicUuid.clear();
+    delete device;
 }
 
 
