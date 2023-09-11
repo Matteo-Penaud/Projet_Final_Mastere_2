@@ -18,6 +18,7 @@ SOURCES += \
     src/main.cpp \
     src/mainpage.cpp \
     src/mainwindow.cpp \
+    src/nfcthread.cpp \
     src/roomaccessbutton.cpp \
     src/roompage.cpp \
     src/roomwidget.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     inc/localsettings.h \
     inc/mainpage.h \
     inc/mainwindow.h \
+    inc/nfcthread.h \
     inc/roomwidget.h \
     inc/settingspage.h \
     inc/statusbar.h \
@@ -50,6 +52,7 @@ HEADERS += \
     inc/roompage.h \
     inc/nfc/Comm.h \
     inc/nfc/MFRC522.h \
+    src/nfcthread.h
 
 TRANSLATIONS += \
     Projet_Master_Qt_fr_FR.ts

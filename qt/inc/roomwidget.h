@@ -7,13 +7,21 @@
 #include <QPushButton>
 #include <QInputDialog>
 #include <QVBoxLayout>
+#include <QThread>
 #include "bluetoohdevice.h"
+#include "nfcthread.h"
 
 class RoomWidget : public QWidget
 {
     Q_OBJECT
+    QThread workerThread;
+
 public:
     explicit RoomWidget(QString &roomName, QWidget *parent = nullptr);
+    ~RoomWidget(){
+        workerThread.quit();
+        workerThread.wait();
+    }
 
     QString getRoomName() const;
     void setRoomName(QString &newRoomName);
@@ -37,13 +45,9 @@ private:
     QPushButton *attachDeviceButton;
     QPushButton *detachDeviceButton;
 
-    bool isNFCReading = false;
-
 private slots:
-    void resetNFCReading(void);
-    void requestNFCTag(void);
-
     void attachModuleSlot(void);
+    void createBluetoohDevice(const QString macAddress = NULL);
     void moduleAttachedSlot(void);
     void detachModuleSlot(void);
 

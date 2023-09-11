@@ -1347,6 +1347,7 @@ void MFRC522::PICC_DumpToSerial(Uid *uid	///< Pointer to Uid struct returned fro
 
     case PICC_TYPE_MIFARE_UL:
         PICC_DumpMifareUltralightToSerial();
+        printf("CACA");
         break;
 
     case PICC_TYPE_ISO_14443_4:

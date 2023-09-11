@@ -1,8 +1,5 @@
 #include "roomwidget.h"
 #include "localsettings.h"
-#include "MFRC522.h"
-#include <unistd.h>
-#include <QCoreApplication>
 //#include "commons.h"
 
 RoomWidget::RoomWidget(QString &roomName, QWidget *parent)
@@ -49,79 +46,41 @@ void RoomWidget::setRoomName(QString &newRoomName)
     roomName = newRoomName;
 }
 
-void RoomWidget::resetNFCReading()
-{
-    isNFCReading = false;
-}
-
-void RoomWidget::requestNFCTag()
-{
-#ifdef __arm__
-    MFRC522 *nfc_handler = new MFRC522(new CommSPI());
-    nfc_handler->PCD_Init();
-    nfc_handler->PCD_DumpVersionToSerial();
-#endif
-
-    QTimer::singleShot(30000, this, &RoomWidget::resetNFCReading);
-
-    datasLabel->setText("NFC Quick Pairing :\napproach module tag...");
-
-#ifdef __arm__
-    isNFCReading = true;
-    while(isNFCReading)
-    {
-        MFRC522::StatusCode status;
-        byte byteCount;
-        byte buffer[18];
-
-        usleep(1000);
-
-        // Look for new cards
-        if (!nfc_handler->PICC_IsNewCardPresent())
-        {
-            continue;
-        }
-
-        // Select one of the cards
-        if (!nfc_handler->PICC_ReadCardSerial())
-        {
-            continue;
-        }
-
-        nfc_handler->PICC_DumpDetailsToSerial(&(nfc_handler->uid));
-
-        if (nfc_handler->uid.sak == nfc_handler->PICC_TYPE_MIFARE_UL)
-        {
-            for(byte page = 0; page < 16; page += 4)
-            {
-                status = nfc_handler->MIFARE_Read(page, buffer, &byteCount);
-                qInfo() << nfc_handler->GetStatusCodeName(status);
-            }
-
-            isNFCReading = false;
-            break;
-        }
-
-        QCoreApplication::processEvents();
-    }
-#endif
-}
-
 void RoomWidget::attachModuleSlot()
-{   
-    requestNFCTag();
+{
+#ifdef __arm__
+    NfcThread *worker = new NfcThread;
+    worker->moveToThread(&workerThread);
+    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+    connect(this, &RoomWidget::nfcRead, worker, &NfcThread::doWork);
+    connect(worker, &NfcThread::resultReady, this, &RoomWidget::createBluetoohDevice);
+    connect(worker, &NfcThread::updateStatus, this, &RoomWidget::updateDatas);
+
+    qDebug() << "Starting NFC Reader";
+    workerThread.start();
+
+    emit nfcRead();
+#else
+    createBluetoohDevice();
+#endif
+}
+
+void RoomWidget::createBluetoohDevice(const QString macAddress)
+{
+    qDebug() << macAddress;
+    deviceMac = macAddress;
 
     datasLabel->clear();
 
-    if(deviceMac.isEmpty() || deviceName.isEmpty())
+    if(deviceMac.isEmpty() && deviceName.isEmpty())
     {
         deviceMac = QInputDialog::getText(this, tr("Get Bluetooth MAC"),
-                                             tr("Module MAC :"), QLineEdit::Normal,
-                                             nullptr, nullptr);
+                                          tr("Module MAC :"), QLineEdit::Normal,
+                                          nullptr, nullptr);
 
         deviceName = QInputDialog::getText(this, tr("Get Bluetooth name"),
-                                                   tr("Module name :"), QLineEdit::Normal,
-                                                   nullptr, nullptr);
+                                           tr("Module name :"), QLineEdit::Normal,
+                                           nullptr, nullptr);
 
 #ifdef QT_DEBUG
         qWarning() << "Device mac or name invalid. Using debug values";
@@ -131,6 +90,10 @@ void RoomWidget::attachModuleSlot()
         qWarning() << "Device mac or name invalid.";
         return;
 #endif
+    }
+    else if(deviceName.isEmpty())
+    {
+        deviceName = "BlueNRG";
     }
 
     serviceUuid = "00000000-0001-11e1-9ab4-0002a5d5c51b";
@@ -142,7 +105,7 @@ void RoomWidget::attachModuleSlot()
         return;
     }
 
-//F9:03:31:DC:D1:DE
+    //F9:03:31:DC:D1:DE
 
     device = new BluetoohDevice(deviceName, deviceMac, serviceUuid, characteristicUuid);
 
@@ -163,6 +126,8 @@ void RoomWidget::attachModuleSlot()
         statusLabel->setText(temp);
     }
 }
+
+
 
 void RoomWidget::moduleAttachedSlot()
 {
