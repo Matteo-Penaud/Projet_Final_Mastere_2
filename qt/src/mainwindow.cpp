@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     bluetoothPage = new BluetoothPage(this);
     settingsPage = new SettingsPage(this);
     devPage = new DevPage(this);
+    testsPage = new TestsPage(this);
 
     statusBar = new StatusBar(this);
 
@@ -47,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     navigationStack->addWidget(bluetoothPage);
     navigationStack->addWidget(settingsPage);
     navigationStack->addWidget(devPage);
+    navigationStack->addWidget(testsPage);
     this->showMainPage();
     this->setCentralWidget(navigationStack);
 
@@ -94,6 +96,11 @@ void MainWindow::showMainPage()
 void MainWindow::showDevPage()
 {
     navigationStack->setCurrentWidget(devPage);
+}
+
+void MainWindow::showTestsPage()
+{
+    navigationStack->setCurrentWidget(testsPage);
 }
 
 void MainWindow::writeSettings()

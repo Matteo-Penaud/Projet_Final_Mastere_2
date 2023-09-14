@@ -15,6 +15,7 @@
 #include "bluetoothpage.h"
 #include "statusbar.h"
 #include "devpage.h"
+#include "testspage.h"
 
 QT_FORWARD_DECLARE_CLASS(QBluetoothDeviceDiscoveryAgent)
 QT_FORWARD_DECLARE_CLASS(QBluetoothDeviceInfo)
@@ -41,6 +42,7 @@ protected:
     BluetoothPage* bluetoothPage;
     SettingsPage* settingsPage;
     DevPage* devPage;
+    TestsPage* testsPage;
     StatusBar* statusBar;
 
 private:
@@ -59,6 +61,7 @@ public slots:
     void showBluetoothManager(void);
     void showMainPage(void);
     void showDevPage(void);
+    void showTestsPage(void);
 
 };
 #endif // MAINWINDOW_H

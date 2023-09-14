@@ -1,6 +1,9 @@
+#include <QTimer>
 #include "roomwidget.h"
 #include "localsettings.h"
-//#include "commons.h"
+#include "commons.h"
+
+bool isNfcActive = false;
 
 RoomWidget::RoomWidget(QString &roomName, QWidget *parent)
     : QWidget{parent}, roomName(roomName)
@@ -49,17 +52,25 @@ void RoomWidget::setRoomName(QString &newRoomName)
 void RoomWidget::attachModuleSlot()
 {
 #ifdef __arm__
-    NfcThread *worker = new NfcThread;
-    worker->moveToThread(&workerThread);
-    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
-    connect(this, &RoomWidget::nfcRead, worker, &NfcThread::doWork);
-    connect(worker, &NfcThread::resultReady, this, &RoomWidget::createBluetoohDevice);
-    connect(worker, &NfcThread::updateStatus, this, &RoomWidget::updateDatas);
+    if(!isNfcActive)
+    {
+        isNfcActive = true;
+        NfcThread *worker = new NfcThread;
+        worker->moveToThread(&workerThread);
+        connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+        connect(this, &RoomWidget::nfcRead, worker, &NfcThread::doWork);
+        connect(worker, &NfcThread::resultReady, this, &RoomWidget::createBluetoohDevice);
+        connect(worker, &NfcThread::updateStatus, this, &RoomWidget::updateDatas);
 
-    qDebug() << "Starting NFC Reader";
-    workerThread.start();
+        qDebug() << "Starting NFC Reader";
+        workerThread.start();
 
-    emit nfcRead();
+        emit nfcRead();
+    }
+    else
+    {
+        qInfo() << "NFC Deamon already in use";
+    }
 #else
     createBluetoohDevice();
 #endif
@@ -67,6 +78,8 @@ void RoomWidget::attachModuleSlot()
 
 void RoomWidget::createBluetoohDevice(const QString macAddress)
 {
+    isNfcActive = false;
+
     qDebug() << macAddress;
     deviceMac = macAddress;
 

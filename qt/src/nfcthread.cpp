@@ -1,13 +1,11 @@
 #include "nfcthread.h"
 #include "MFRC522.h"
 #include <unistd.h>
-#include <QTimer>
 #include "commons.h"
 
 NfcThread::NfcThread(QObject *parent)
     : QObject{parent}
 {
-
 }
 
 void NfcThread::doWork()
@@ -18,8 +16,6 @@ void NfcThread::doWork()
     nfc_handler->PCD_DumpVersionToSerial();
 
     qInfo() << "NFC Seeking tag ...";
-
-    QTimer::singleShot(15000, this, &NfcThread::resetNfcReading);
 
     isNFCReading = true;
 
@@ -105,6 +101,7 @@ void NfcThread::doWork()
 
 void NfcThread::resetNfcReading()
 {
+    qWarning() << "NFC reader timeout. No card found";
     isNFCReading = false;
 }
 

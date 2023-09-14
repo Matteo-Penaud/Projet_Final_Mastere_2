@@ -25,6 +25,11 @@ StatusBar::StatusBar(QWidget *parent)
     roomLabel->setMaximumWidth(350);
     roomLabel->setContentsMargins(10, 0, 20, 0);
 
+#ifdef QT_DEBUG
+    testsAction = new QAction(QIcon::fromTheme("book-open"), NULL, this);
+    testsAction->connect(testsAction, SIGNAL(triggered()), this->parent(), SLOT(showTestsPage()));
+#endif
+
     devAction = new QAction(QIcon::fromTheme("wrench"), NULL, this);
     devAction->connect(devAction, SIGNAL(triggered()), this->parent(), SLOT(showDevPage()));
 
@@ -42,6 +47,10 @@ StatusBar::StatusBar(QWidget *parent)
     addWidget(roomLabel);
 
     addWidget(spacer);
+
+#ifdef QT_DEBUG
+    addAction(testsAction);
+#endif
     addAction(devAction);
     addAction(bluetoothAction);
     addAction(notificationAction);

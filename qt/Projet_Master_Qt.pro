@@ -28,6 +28,8 @@ SOURCES += \
     src/nfc/CommSPI.cpp \
     src/nfc/CommUART.cpp \
     src/nfc/MFRC522.cpp \
+    src/testspage.cpp \
+    src/testwidget.cpp
 
 INCLUDEPATH += \
     inc/ \
@@ -52,6 +54,8 @@ HEADERS += \
     inc/roompage.h \
     inc/nfc/Comm.h \
     inc/nfc/MFRC522.h \
+    inc/testspage.h \
+    inc/testwidget.h \
     src/nfcthread.h
 
 TRANSLATIONS += \

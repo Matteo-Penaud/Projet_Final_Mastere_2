@@ -8,6 +8,7 @@
 #include <QInputDialog>
 #include <QVBoxLayout>
 #include <QThread>
+#include <QTimer>
 #include "bluetoohdevice.h"
 #include "nfcthread.h"
 

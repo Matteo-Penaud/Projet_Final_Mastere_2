@@ -26,6 +26,7 @@ private:
     QAction* editAction;
 
     //right part
+    QAction* testsAction;
     QAction* devAction;
     QAction* bluetoothAction;
     QAction* notificationAction;
