@@ -1,0 +1,12 @@
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:103:12:Add_HWServW2ST_Service	64	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:154:12:Add_SWServW2ST_Service	64	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:198:12:Add_ConsoleW2ST_Service	64	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:255:12:Environmental_Update	40	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:280:12:Acc_Update	56	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:314:12:Quat_Update	40	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:366:12:Term_Update	32	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:397:12:Term_Update_AfterRead	24	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:416:6:Read_Request_CB	88	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:458:6:Attribute_Modified_Request_CB	40	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:522:17:DebugConsoleCommandParsing	72	static
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/gatt_db.c:661:16:getBlueNRG2_Version	80	static

@@ -1,0 +1,16 @@
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:114:6:MX_BlueNRG_2_Init	2
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:167:6:MX_BlueNRG_2_Process	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:187:13:User_Init	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:201:9:Sensor_DeviceInit	9
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:367:13:User_Process	11
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:461:13:Set_Random_Environmental_Values	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:473:13:Set_Random_Motion_Values	2
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:514:13:Reset_Motion_Values	10
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:537:9:getBlueNRGVersion	2
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:561:6:BSP_PB_Callback	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:574:6:hci_le_connection_complete_event	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:603:6:hci_disconnection_complete_event	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:625:6:aci_gatt_read_permit_req_event	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:637:6:aci_gatt_attribute_modified_event	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:654:6:aci_gap_pass_key_req_event	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Src/app_bluenrg_2.c:674:6:aci_gap_pairing_complete_event	2

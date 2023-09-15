@@ -1,0 +1,9 @@
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:55:12:verify_packet	3
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:77:13:send_cmd	2
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:103:13:move_list	2
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:120:13:free_event_list	2
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:132:6:hci_init	5
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:159:6:hci_register_io_bus	1
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:169:5:hci_send_req	19
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:309:6:hci_user_evt_proc	3
+D:/STM32CubeIDE_Workspace/SensorDemo_BLESensor-App/Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:327:9:hci_notify_asynch_evt	5
