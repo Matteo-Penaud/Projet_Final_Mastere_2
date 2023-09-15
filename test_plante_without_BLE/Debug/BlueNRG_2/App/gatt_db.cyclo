@@ -1,0 +1,12 @@
+../BlueNRG_2/App/gatt_db.c:103:12:Add_HWServW2ST_Service	4
+../BlueNRG_2/App/gatt_db.c:154:12:Add_SWServW2ST_Service	3
+../BlueNRG_2/App/gatt_db.c:198:12:Add_ConsoleW2ST_Service	4
+../BlueNRG_2/App/gatt_db.c:255:12:Environmental_Update	2
+../BlueNRG_2/App/gatt_db.c:280:12:Acc_Update	2
+../BlueNRG_2/App/gatt_db.c:314:12:Quat_Update	2
+../BlueNRG_2/App/gatt_db.c:366:12:Term_Update	3
+../BlueNRG_2/App/gatt_db.c:397:12:Term_Update_AfterRead	2
+../BlueNRG_2/App/gatt_db.c:416:6:Read_Request_CB	5
+../BlueNRG_2/App/gatt_db.c:458:6:Attribute_Modified_Request_CB	15
+../BlueNRG_2/App/gatt_db.c:522:17:DebugConsoleCommandParsing	10
+../BlueNRG_2/App/gatt_db.c:661:16:getBlueNRG2_Version	3

@@ -1,0 +1,10 @@
+../BlueNRG_2/Target/hci_tl_interface.c:46:13:HCI_TL_SPI_Enable_IRQ	8	static
+../BlueNRG_2/Target/hci_tl_interface.c:56:13:HCI_TL_SPI_Disable_IRQ	8	static
+../BlueNRG_2/Target/hci_tl_interface.c:68:9:HCI_TL_SPI_Init	40	static
+../BlueNRG_2/Target/hci_tl_interface.c:106:9:HCI_TL_SPI_DeInit	8	static
+../BlueNRG_2/Target/hci_tl_interface.c:120:9:HCI_TL_SPI_Reset	8	static
+../BlueNRG_2/Target/hci_tl_interface.c:139:9:HCI_TL_SPI_Receive	40	static
+../BlueNRG_2/Target/hci_tl_interface.c:202:9:HCI_TL_SPI_Send	48	static
+../BlueNRG_2/Target/hci_tl_interface.c:291:16:IsDataAvailable	8	static
+../BlueNRG_2/Target/hci_tl_interface.c:303:6:hci_tl_lowlevel_init	40	static
+../BlueNRG_2/Target/hci_tl_interface.c:342:6:hci_tl_lowlevel_isr	8	static

@@ -1,0 +1,2 @@
+../Middlewares/ST/BlueNRG-2/hci/controller/bluenrg1_l2cap_aci.c:22:12:aci_l2cap_connection_parameter_update_req	320	static
+../Middlewares/ST/BlueNRG-2/hci/controller/bluenrg1_l2cap_aci.c:58:12:aci_l2cap_connection_parameter_update_resp	320	static

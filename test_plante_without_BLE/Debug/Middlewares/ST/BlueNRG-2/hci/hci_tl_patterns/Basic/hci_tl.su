@@ -1,0 +1,9 @@
+../Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:55:12:verify_packet	24	static
+../Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:77:13:send_cmd	160	static
+../Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:103:13:move_list	24	static
+../Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:120:13:free_event_list	16	static
+../Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:132:6:hci_init	24	static
+../Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:159:6:hci_register_io_bus	16	static
+../Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:169:5:hci_send_req	64	static
+../Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:309:6:hci_user_evt_proc	16	static
+../Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/hci_tl.c:327:9:hci_notify_asynch_evt	32	static
