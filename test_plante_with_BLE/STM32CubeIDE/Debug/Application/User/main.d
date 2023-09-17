@@ -39,7 +39,7 @@ Application/User/main.o: \
  ../../Drivers/BSP/STM32L4xx_Nucleo/stm32l4xx_nucleo.h \
  ../../Inc/stm32l4xx_nucleo_conf.h \
  ../../Drivers/BSP/STM32L4xx_Nucleo/stm32l4xx_nucleo_errno.h \
- ../../Inc/app_bluenrg_2.h
+ ../../Inc/app_bluenrg_2.h ../../Inc/commons.h
 ../../Inc/main.h:
 ../../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h:
 ../../Inc/stm32l4xx_hal_conf.h:
@@ -82,3 +82,4 @@ Application/User/main.o: \
 ../../Inc/stm32l4xx_nucleo_conf.h:
 ../../Drivers/BSP/STM32L4xx_Nucleo/stm32l4xx_nucleo_errno.h:
 ../../Inc/app_bluenrg_2.h:
+../../Inc/commons.h:

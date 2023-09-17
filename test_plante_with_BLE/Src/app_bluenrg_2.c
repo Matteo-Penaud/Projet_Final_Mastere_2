@@ -414,9 +414,9 @@ static void User_Process(void)
 
       if (send_env) {
         /* Update emulated Environmental data */
-        //Set_Random_Environmental_Values(&data_t, &data_p);
-    	data_p = moisture_value;
-    	data_t = waterlevel_value;
+        // Set_Random_Environmental_Values(&data_t, &data_p);
+      	data_p = moisture_value;
+      	data_t = waterlevel_value;
         Environmental_Update((int32_t)(data_p *100), (int16_t)(data_t * 10));
 #if (!USE_BUTTON)
         BSP_LED_Toggle(LED2);
