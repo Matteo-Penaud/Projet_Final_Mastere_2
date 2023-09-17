@@ -23,9 +23,17 @@ MainPage::MainPage(QStackedWidget *navigationStack, QWidget *parent)
     setLayout(this->mainLayout);
 
     addWidgetButton = new QPushButton("+", this);
+    addWidgetButton->setStyleSheet("\
+                                    background-color: gray;\
+                                    border-radius: 25px;\
+                                    color: white; \
+                                    font-weight: bold\
+                                    ");
+
+
     addWidgetButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     addWidgetButton->connect(addWidgetButton, SIGNAL(clicked()), this, SLOT(createNewWidget()));
-    addWidgetButton->setGeometry(SCREEN_WIDTH-40, SCREEN_HEIGHT-80, 30, 30);
+    addWidgetButton->setGeometry(SCREEN_WIDTH-60, SCREEN_HEIGHT-100, 50, 50);
 
     readSettings();
 }
@@ -69,11 +77,10 @@ void MainPage::createNewWidget(const QString &roomName)
             temp_name = "ROOM" + QString::number(widget_count);
         }
 
-        RoomAccessButton *temp_button = new RoomAccessButton(this);
         RoomPage *temp_room = new RoomPage(widget_count, this);
-        temp_button->setRoom(temp_room);
-        temp_button->setText(temp_name);
+        RoomAccessButton *temp_button = new RoomAccessButton(temp_room, this);
         temp_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        connect(temp_room, &RoomPage::roomNameChanged, temp_button, &RoomAccessButton::setRoomName);
         this->widgetsList.append(temp_button);
         this->navigationStack->addWidget(temp_room);
 

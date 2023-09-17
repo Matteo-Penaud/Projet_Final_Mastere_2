@@ -4,7 +4,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QWidget>
-
+#include <QBluetoothLocalDevice>
 #include <QApplication>
 #include "commons.h"
 
@@ -15,10 +15,13 @@ public:
     explicit SettingsPage(QWidget *parent = nullptr);
 
 private:
+    QPushButton* bluetoothToggle;
     QPushButton* shutdownButton;
 
-private slots:
+    void getBluetoothState(void);
 
+private slots:
+    void toggleBluetooth(void);
 
 };
 

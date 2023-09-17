@@ -13,16 +13,17 @@ RoomWidget::RoomWidget(QString &roomName, QWidget *parent)
     mainLayout = new QVBoxLayout();
     mainLayout->setSpacing(10);
     mainLayout->setMargin(20);
+    mainLayout->setAlignment(Qt::AlignBottom);
 
     this->setLayout(mainLayout);
 
-    datasLabel = new QLabel("");
-    datasLabel->setAlignment(Qt::AlignCenter);
-    datasLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    mainLayout->addWidget(datasLabel);
+//    datasLabel = new QLabel("");
+//    datasLabel->setAlignment(Qt::AlignCenter);
+//    datasLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//    mainLayout->addWidget(datasLabel);
 
     statusLabel = new QLabel("No device connected");
-    statusLabel->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+    statusLabel->setAlignment(Qt::AlignHCenter);
     mainLayout->addWidget(statusLabel);
 
     attachDeviceButton = new QPushButton("Attach module", this);
@@ -60,7 +61,7 @@ void RoomWidget::attachModuleSlot()
         connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
         connect(this, &RoomWidget::nfcRead, worker, &NfcThread::doWork);
         connect(worker, &NfcThread::resultReady, this, &RoomWidget::createBluetoohDevice);
-        connect(worker, &NfcThread::updateStatus, this, &RoomWidget::updateDatas);
+        connect(worker, &NfcThread::updateStatus, this, &RoomWidget::updateBluetoothStatus);
 
         qDebug() << "Starting NFC Reader";
         workerThread.start();
@@ -76,16 +77,13 @@ void RoomWidget::attachModuleSlot()
 #endif
 }
 
-void RoomWidget::createBluetoohDevice(const QString macAddress)
+void RoomWidget::createBluetoohDevice(const QString macAddress, const QString type)
 {
     isNfcActive = false;
 
-    qDebug() << macAddress;
     deviceMac = macAddress;
 
-    datasLabel->clear();
-
-    if(deviceMac.isEmpty() && deviceName.isEmpty())
+    if(deviceMac.isEmpty() || deviceName.isEmpty())
     {
         deviceMac = QInputDialog::getText(this, tr("Get Bluetooth MAC"),
                                           tr("Module MAC :"), QLineEdit::Normal,
@@ -96,9 +94,12 @@ void RoomWidget::createBluetoohDevice(const QString macAddress)
                                            nullptr, nullptr);
 
 #ifdef QT_DEBUG
-        qWarning() << "Device mac or name invalid. Using debug values";
-        deviceMac = "DE:EF:58:97:1A:75";
-        deviceName = "BlueNRG";
+        if(deviceMac.isEmpty() && deviceName.isEmpty())
+        {
+            qWarning() << "Device mac and name invalid. Using debug values";
+            deviceMac = "DE:EF:58:97:1A:75";
+            deviceName = "BlueNRG";
+        }
 #else
         qWarning() << "Device mac or name invalid.";
         return;
@@ -109,6 +110,7 @@ void RoomWidget::createBluetoohDevice(const QString macAddress)
         deviceName = "BlueNRG";
     }
 
+    qDebug() << deviceMac << deviceName;
     serviceUuid = "00000000-0001-11e1-9ab4-0002a5d5c51b";
     characteristicUuid = "00140000-0001-11e1-ac36-0002a5d5c51b";
 
@@ -126,9 +128,21 @@ void RoomWidget::createBluetoohDevice(const QString macAddress)
     {
         connect(device, &BluetoohDevice::changeStatus, this, &RoomWidget::updateBluetoothStatus);
         connect(detachDeviceButton, &QPushButton::clicked, device, &BluetoohDevice::disconnectFromDevice);
-        connect(device, &BluetoohDevice::updateDatas, this, &RoomWidget::updateDatas);
         connect(device, &BluetoohDevice::deviceConnectedSignal, this, &RoomWidget::moduleAttachedSlot);
         connect(device, &BluetoohDevice::deviceDisconnectedSignal, this, &RoomWidget::detachModuleSlot);
+
+        if(type == "QDV000" || type.isEmpty())
+        {
+            if(centralWidget != nullptr)
+            {
+                delete centralWidget;
+            }
+            centralWidget = new QdvWidget();
+//            centralWidget = new PlantWidget();
+            centralWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            mainLayout->insertWidget(0, centralWidget);
+            connect(device, &BluetoohDevice::updateDatas, this, &RoomWidget::updateDatasQdv);
+        }
 
         device->startDeviceDiscovery();
     }
@@ -179,26 +193,18 @@ void RoomWidget::saveDeviceConfiguration()
             settings.setValue("characteristic", characteristicUuid);
             settings.endGroup();
         settings.endGroup();
-            settings.endGroup();
+    settings.endGroup();
 }
 
-void RoomWidget::updateDatas(QString datas)
+void RoomWidget::updateDatasQdv(int temp, int press)
 {
-    datasLabel->setText(datas);
+    qobject_cast<QdvWidget*>(centralWidget)->setTemp(temp/10);
+    qobject_cast<QdvWidget*>(centralWidget)->setPressure(press/100);
 }
 
-void RoomWidget::updateBluetoothStatus(QString &status)
+void RoomWidget::updateBluetoothStatus(QString status)
 {
     statusLabel->setText(status);
-}
-
-void RoomWidget::resetAll()
-{
-    deviceMac.clear();
-    deviceName.clear();
-    serviceUuid.clear();
-    characteristicUuid.clear();
-    delete device;
 }
 
 

@@ -11,6 +11,7 @@ NfcThread::NfcThread(QObject *parent)
 void NfcThread::doWork()
 {
     QString macAddress;
+    QString tempType;
     MFRC522 *nfc_handler = new MFRC522(new CommSPI());
     nfc_handler->PCD_Init();
     nfc_handler->PCD_DumpVersionToSerial();
@@ -77,16 +78,27 @@ void NfcThread::doWork()
                     tempMac.append(':');
                 }
             }
+            qDebug() << QByteArray::fromHex(test.toLocal8Bit());
 
-                if(tempMac.count(':') == 5 && tempMac.length() == 17)
-                {
-                    qInfo() << "NFC Reader found MAC : " << tempMac;
-                    macAddress = tempMac;
-                }
-                else
-                {
-                    qWarning() << "NFC Reader error : no valid MAC found.";
-                }
+            for(int i=0; i < 6; i++)
+            {
+                tempType.append(QByteArray::fromHex(test.split(' ')[42+i].toLocal8Bit()));
+            }
+
+            if(!tempType.isEmpty())
+            {
+                qInfo() << "NFC Reader found Module Type : " << tempType;
+            }
+
+            if(tempMac.count(':') == 5 && tempMac.length() == 17)
+            {
+                qInfo() << "NFC Reader found MAC : " << tempMac;
+                macAddress = tempMac;
+            }
+            else
+            {
+                qWarning() << "NFC Reader error : no valid MAC found.";
+            }
 
             isNFCReading = false;
             break;
@@ -96,7 +108,7 @@ void NfcThread::doWork()
 
     qDebug() << "End of NFC Thread";
 
-    emit resultReady(macAddress);
+    emit resultReady(macAddress, tempType);
 }
 
 void NfcThread::resetNfcReading()

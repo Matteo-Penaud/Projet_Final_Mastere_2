@@ -14,10 +14,12 @@ class TestsWrapper : public QWidget
 public:
     explicit TestsWrapper(QWidget *parent = nullptr);
 
+    QList<TestWidget *> getTestsList() const;
+
 private:
     QVBoxLayout *mainLayout;
-
     QList<TestWidget *> testsList;
+
     QMap<QString, FuncPointer> testFunctions;
 
 signals:
@@ -34,11 +36,11 @@ private:
     QScrollArea *scrollArea;
     QVBoxLayout *mainLayout;
     TestsWrapper *wrapper;
-
-
+    QPushButton *runAll;
 
 private slots:
     void resizeEvent(QResizeEvent *);
+    void runAllTests(void);
 
 signals:
 

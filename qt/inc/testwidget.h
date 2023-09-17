@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QHBoxLayout>
+#include <QPainter>
 #include "commons.h"
 
 class TestWidget : public QWidget
@@ -15,6 +16,8 @@ public:
                         FuncPointer func,
                         QWidget *parent = nullptr);
 
+    void lockTest(bool state);
+
 private:
     QHBoxLayout *mainLayout;
     QPushButton *testButton;
@@ -24,14 +27,15 @@ private:
     QWidget *spacer;
 
     QString testResult;
+    QLabel *resultLabel;
 
     FuncPointer func;
 
-private slots:
+public slots:
     void execTest(void);
 
 signals:
-
+    void runTest(void);
 
 };
 

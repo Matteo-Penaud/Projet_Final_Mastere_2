@@ -5,6 +5,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 #include "localsettings.h"
 
 class BluetoothPage : public QWidget

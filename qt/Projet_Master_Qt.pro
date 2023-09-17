@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui svg #virtualkeyboard
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += core bluetooth widgets
 
@@ -19,6 +19,8 @@ SOURCES += \
     src/mainpage.cpp \
     src/mainwindow.cpp \
     src/nfcthread.cpp \
+    src/plantwidget.cpp \
+    src/qdvwidget.cpp \
     src/roomaccessbutton.cpp \
     src/roompage.cpp \
     src/roomwidget.cpp \
@@ -47,6 +49,8 @@ HEADERS += \
     inc/mainpage.h \
     inc/mainwindow.h \
     inc/nfcthread.h \
+    inc/plantwidget.h \
+    inc/qdvwidget.h \
     inc/roomwidget.h \
     inc/settingspage.h \
     inc/statusbar.h \

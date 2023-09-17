@@ -17,7 +17,7 @@ public slots:
     void resetNfcReading(void);
 
 signals:
-    void resultReady(const QString macAddress);
+    void resultReady(const QString macAddress, const QString type);
     void updateStatus(QString);
 };
 

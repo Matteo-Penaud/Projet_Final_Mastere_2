@@ -5,6 +5,8 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QTextEdit>
+#include <QTimer>
+#include <QScrollBar>
 
 class DevPage : public QWidget
 {
@@ -16,9 +18,11 @@ private:
     QTextEdit *logView;
     QVBoxLayout *mainLayout;
     QPushButton *resetConfiguration;
+    QTimer *updateLogsTimer;
 
 private slots:
     void resetConfigurationSlot(void);
+    void updateText(void);
 
 signals:
 

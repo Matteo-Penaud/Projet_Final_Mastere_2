@@ -12,6 +12,7 @@
 #define APPLICATION_NAME     "WatiHouse"
 
 #define DEBUG_OUT(s) (qDebug() << (s))
+#define CURRENT_TIME_LOG QDateTime::currentDateTime().toString(QString("[yyyy-MM-dd--hh:mm:ss]")).toLocal8Bit().constData()
 
 #define TEST_OK "TEST_OK"
 #define TEST_KO "TEST_KO"
@@ -23,14 +24,10 @@ typedef void (*FuncPointer)(QString&);
 
 /* BLE */
 void testBluetoothEnable(QString &result);
-void testBluetoothPairing(QString &result);
-void testBluetoothGetData(QString &result);
 void testBluetoothDisable(QString &result);
 
 /* NFC */
 void testNfcEnable(QString &result);
-void testNfcRead(QString &result);
-void testNfcDisable(QString &result);
 
 /* Widgets */
 void testRoomCreation(QString &result);

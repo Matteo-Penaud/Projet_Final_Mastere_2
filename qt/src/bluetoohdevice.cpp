@@ -105,6 +105,8 @@ void BluetoohDevice::deviceScanError(QBluetoothDeviceDiscoveryAgent::Error error
 void BluetoohDevice::deviceScanFinished()
 {
     qInfo() << "Discover ended.";
+    QString temp = "Device not found";
+    Q_EMIT changeStatus(temp);
 }
 
 void BluetoohDevice::scanServices()
@@ -217,16 +219,13 @@ void BluetoohDevice::characteristicUpdated(const QLowEnergyCharacteristic &ch, c
     if(cInfo->getUuid() == m_characteristicUuid)
     {
         QString data = QString(cInfo->getValue());
-        QString temp = QString(data[6*2]) + data[6*2 +1];
+        QString temp = QString(data[7*2 + 1]) + data[6*2] + data[6*2 +1];
 
-        QString press = QString(data[3*2]) + data[3*2 + 1] + data[2*2] + data[2*2 + 1];
+        QString press = QString(data[4*2 + 1]) + data[3*2] + data[3*2 + 1] + data[2*2] + data[2*2 + 1];
 
         Q_EMIT updateDatas(
-            QString("Temperature : %1°C"
-                    "\nPressure : %2hPa").arg(
-                    QString::number(temp.toUInt(nullptr, 16)),
-                    QString::number(press.toUInt(nullptr, 16))
-                    )
+            temp.toInt(nullptr, 16),
+            press.toInt(nullptr, 16)
         );
 
         qInfo() << m_macAddress + " : " + data << "Found temp:" << temp.toUInt(nullptr, 16);

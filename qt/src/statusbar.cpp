@@ -4,10 +4,9 @@
 StatusBar::StatusBar(QWidget *parent)
     : QToolBar{parent}
 {
-    QIcon::setThemeName("fontawesome");
-    this->setMovable(IS_MOVABLE);
-    this->setAllowedAreas(Qt::TopToolBarArea);
-    this->setContextMenuPolicy(Qt::PreventContextMenu);
+    setMovable(IS_MOVABLE);
+    setAllowedAreas(Qt::TopToolBarArea);
+    setContextMenuPolicy(Qt::PreventContextMenu);
 
     spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

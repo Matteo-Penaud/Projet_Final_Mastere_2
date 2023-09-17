@@ -1,5 +1,9 @@
 #include "testspage.h"
+#include <QFile>
 #include <QBluetoothLocalDevice>
+#include "MFRC522.h"
+#include "localsettings.h"
+#include <bluetoohdevice.h>
 
 TestsWrapper::TestsWrapper(QWidget *parent)
     : QWidget{parent}
@@ -9,14 +13,10 @@ TestsWrapper::TestsWrapper(QWidget *parent)
 
     /* BLE */
     testFunctions["Bluetooth Enable"] = (FuncPointer)&testBluetoothEnable;
-    testFunctions["Bluetooth Pairing"] = (FuncPointer)&testBluetoothPairing;
-    testFunctions["Bluetooth Get Data"] = (FuncPointer)&testBluetoothGetData;
     testFunctions["Bluetooth Disable"] = (FuncPointer)&testBluetoothDisable;
 
     /* NFC */
     testFunctions["NFC Enable"] = (FuncPointer)&testNfcEnable;
-    testFunctions["NFC Read"] = (FuncPointer)&testNfcRead;
-    testFunctions["NFC Disable"] = (FuncPointer)&testNfcDisable;
 
     /* Widgets */
     testFunctions["Room Creation"] = (FuncPointer)&testRoomCreation;
@@ -35,10 +35,16 @@ TestsWrapper::TestsWrapper(QWidget *parent)
     foreach(QString testName, testFunctions.keys())
     {
         TestWidget *temp = new TestWidget(testName, testFunctions[testName], this);
+        testsList.append(temp);
         qDebug() << testName << testFunctions[testName];
 
         mainLayout->addWidget(temp);
     }
+}
+
+QList<TestWidget *> TestsWrapper::getTestsList() const
+{
+    return testsList;
 }
 
 TestsPage::TestsPage(QWidget *parent)
@@ -54,11 +60,35 @@ TestsPage::TestsPage(QWidget *parent)
 
     wrapper = new TestsWrapper(this);
     scrollArea->setWidget(wrapper);
+
+    runAll = new QPushButton("Run all tests", this);
+    connect(runAll, &QPushButton::clicked, this, &TestsPage::runAllTests);
+    mainLayout->addWidget(runAll);
 }
 
 void TestsPage::resizeEvent(QResizeEvent *e)
 {
     wrapper->setMinimumWidth(scrollArea->width() - 20);
+}
+
+void TestsPage::runAllTests()
+{
+    qDebug() << "Running all tests ...";
+
+    foreach(TestWidget *test, wrapper->getTestsList())
+    {
+        test->lockTest(true);
+    }
+
+    foreach(TestWidget *test, wrapper->getTestsList())
+    {
+        test->execTest();
+    }
+
+    foreach(TestWidget *test, wrapper->getTestsList())
+    {
+        test->lockTest(false);
+    }
 }
 
 void testBluetoothEnable(QString &result)
@@ -72,16 +102,6 @@ void testBluetoothEnable(QString &result)
     {
         result = TEST_OK;
     }
-}
-
-void testBluetoothPairing(QString &result)
-{
-    qDebug() << "Running Bluetooth Pairing Test...";
-}
-
-void testBluetoothGetData(QString &result)
-{
-    qDebug() << "Running Bluetooth Get Data Test...";
 }
 
 void testBluetoothDisable(QString &result)
@@ -100,16 +120,15 @@ void testBluetoothDisable(QString &result)
 void testNfcEnable(QString &result)
 {
     qDebug() << "Running NFC Enable Test...";
-}
 
-void testNfcRead(QString &result)
-{
-    qDebug() << "Running NFC Read Test...";
-}
+    MFRC522 *nfc_handler = new MFRC522(new CommSPI());
+    nfc_handler->PCD_Init();
+    byte v = nfc_handler->PCD_ReadRegister(MFRC522::VersionReg);
 
-void testNfcDisable(QString &result)
-{
-    qDebug() << "Running NFC Disable Test...";
+    if(v != 0xFF && v != 0x00)
+    {
+        result = TEST_OK;
+    }
 }
 
 void testRoomCreation(QString &result)
@@ -135,21 +154,57 @@ void testRoomRemove(QString &result)
 void testLog(QString &result)
 {
     qDebug() << "Running Logging Test...";
+
+    if(QFile::exists(*logFileName))
+    {
+        result = TEST_OK;
+    }
 }
 
 void testSettingsSaving(QString &result)
 {
     qDebug() << "Running Settings Saving Test...";
+
+    QSettings settings;
+
+    if(settings.isWritable())
+    {
+        result = TEST_OK;
+    }
 }
 
 void testSettingsRestore(QString &result)
 {
     qDebug() << "Running Settings Restoring Test...";
+
+    QSettings settings;
+
+    settings.beginGroup("TESTS");
+    settings.setValue("get", "true");
+
+    if(settings.value("get") == "true")
+    {
+        result = TEST_OK;
+    }
+    settings.endGroup();
 }
 
 void testSettingsClear(QString &result)
 {
     qDebug() << "Running Settings Clearing Test...";
+
+    QSettings settings;
+
+    settings.beginGroup("TESTS");
+    settings.setValue("dummy", "dummy");
+    settings.endGroup();
+
+    settings.remove("TESTS");
+
+    if(!settings.childGroups().contains("TESTS"))
+    {
+        result = TEST_OK;
+    }
 }
 
 void testScreenCalibration(QString &result)

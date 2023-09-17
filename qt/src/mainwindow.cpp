@@ -11,22 +11,36 @@ MainWindow::MainWindow(QWidget *parent)
     this->setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 #ifdef __arm__
-    this->setWindowState(Qt::WindowFullScreen);
+
+    setGeometry(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    setWindowFlag(Qt::FramelessWindowHint);
+//    this->setWindowState(Qt::FramelessWindowHint);
 #endif
 
     timeUpdate = new QTimer(this);
     timeLabel = new QLabel(this);
 
     navigationStack = new QStackedWidget(this);
+    navigationStack->setStyleSheet("background-color: white");
 
     /* Pages creation */
     mainPage = new MainPage(navigationStack, this);
+    mainPage->setStyleSheet("background-color: white");
+
     bluetoothPage = new BluetoothPage(this);
+    bluetoothPage->setStyleSheet("background-color: white");
+
     settingsPage = new SettingsPage(this);
+    settingsPage->setStyleSheet("background-color: white");
+
     devPage = new DevPage(this);
+    devPage->setStyleSheet("background-color: white");
+
     testsPage = new TestsPage(this);
+    testsPage->setStyleSheet("background-color: white");
 
     statusBar = new StatusBar(this);
+    statusBar->setStyleSheet("background-color: white");
 
     discoveryAgent = new QBluetoothDeviceDiscoveryAgent();
 

@@ -11,6 +11,8 @@
 #include <QTimer>
 #include "bluetoohdevice.h"
 #include "nfcthread.h"
+#include "plantwidget.h"
+#include "qdvwidget.h"
 
 class RoomWidget : public QWidget
 {
@@ -30,6 +32,8 @@ public:
 private:
     QVBoxLayout* mainLayout;
     QLabel* datasLabel;
+    QWidget* centralWidget = nullptr;
+
     QLabel* statusLabel;
 
     QString roomName;
@@ -48,16 +52,16 @@ private:
 
 private slots:
     void attachModuleSlot(void);
-    void createBluetoohDevice(const QString macAddress = NULL);
+    void createBluetoohDevice(const QString macAddress = NULL, const QString type = NULL);
     void moduleAttachedSlot(void);
     void detachModuleSlot(void);
 
     void saveDeviceConfiguration(void);
 
-    void updateDatas(QString);
-    void updateBluetoothStatus(QString &);
+    void updateDatasQdv(int, int);
+    void updateBluetoothStatus(QString);
 
-    void resetAll(void);
+//    bool deviceExists(void);
 
 signals:
     void nfcRead(void);

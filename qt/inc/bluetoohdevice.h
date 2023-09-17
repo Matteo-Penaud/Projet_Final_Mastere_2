@@ -65,8 +65,8 @@ public slots:
 
 signals:
     void deviceFound(void);
-    void changeStatus(QString&);
-    void updateDatas(QString);
+    void changeStatus(QString);
+    void updateDatas(int, int);
 
     void deviceConnectedSignal(void);
     void deviceDisconnectedSignal(void);

@@ -3,9 +3,8 @@
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QProxyStyle>
 #include "commons.h"
-
-#define CURRENT_TIME_LOG QDateTime::currentDateTime().toString(QString("[yyyy-MM-dd--hh:mm:ss]")).toLocal8Bit().constData()
 
 QString *logFileName;
 
@@ -48,9 +47,19 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName(ORGANISATION_NAME);
     QCoreApplication::setOrganizationDomain(ORGANISATION_DOMAINE);
     QCoreApplication::setApplicationName(APPLICATION_NAME);
+    QIcon::setThemeName("fontawesome");
 
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
+    a.setCursorFlashTime(0);
+
+#ifdef __arm__
+    QCursor cursor(Qt::BlankCursor);
+    QApplication::setOverrideCursor(cursor);
+    QApplication::changeOverrideCursor(cursor);
+#endif
+
+    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
     qInstallMessageHandler(logMessageReceived);
 
     logFileName = new QString(QDateTime::currentDateTime().toString(QString("yyyy-MM-dd--hh:mm:ss")) + "_logs.txt");
