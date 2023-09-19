@@ -40,6 +40,17 @@ RoomWidget::RoomWidget(QString &roomName, QWidget *parent)
     mainLayout->addLayout(controlsLayout);
 }
 
+RoomWidget::~RoomWidget()
+{
+    workerThread.quit();
+    workerThread.wait();
+
+    if(device != nullptr)
+    {
+        delete device;
+    }
+}
+
 QString RoomWidget::getRoomName() const
 {
     return roomName;
@@ -83,7 +94,7 @@ void RoomWidget::createBluetoohDevice(const QString macAddress, const QString ty
 
     deviceMac = macAddress;
 
-    if(deviceMac.isEmpty() || deviceName.isEmpty())
+    if(deviceMac.isEmpty() && deviceName.isEmpty())
     {
         deviceMac = QInputDialog::getText(this, tr("Get Bluetooth MAC"),
                                           tr("Module MAC :"), QLineEdit::Normal,
@@ -105,7 +116,8 @@ void RoomWidget::createBluetoohDevice(const QString macAddress, const QString ty
         return;
 #endif
     }
-    else if(deviceName.isEmpty())
+
+    if(deviceName.isEmpty())
     {
         deviceName = "BlueNRG";
     }
@@ -122,6 +134,11 @@ void RoomWidget::createBluetoohDevice(const QString macAddress, const QString ty
 
     //F9:03:31:DC:D1:DE
 
+    if(device)
+    {
+        delete device;
+    }
+
     device = new BluetoohDevice(deviceName, deviceMac, serviceUuid, characteristicUuid);
 
     if(device)
@@ -130,18 +147,51 @@ void RoomWidget::createBluetoohDevice(const QString macAddress, const QString ty
         connect(detachDeviceButton, &QPushButton::clicked, device, &BluetoohDevice::disconnectFromDevice);
         connect(device, &BluetoohDevice::deviceConnectedSignal, this, &RoomWidget::moduleAttachedSlot);
         connect(device, &BluetoohDevice::deviceDisconnectedSignal, this, &RoomWidget::detachModuleSlot);
+        connect(device, &BluetoohDevice::deviceConnectionError, this, &RoomWidget::deviceConnectionError);
 
-        if(type == "QDV000" || type.isEmpty())
+        if(type == "PLANTE")
+        {
+            // Central widget
+            if(centralWidget != nullptr)
+            {
+                delete centralWidget;
+            }
+            centralWidget = new PlantWidget();
+            centralWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            mainLayout->insertWidget(0, centralWidget);
+            connect(device, &BluetoohDevice::updateDatas, this, &RoomWidget::updateDatasPlant);
+
+            // Button widget
+            if(buttonWidget != nullptr)
+            {
+                delete buttonWidget;
+            }
+            buttonWidget = new PlantWidget();
+            buttonWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        }
+        else//(type == "QDV000")
         {
             if(centralWidget != nullptr)
             {
                 delete centralWidget;
             }
             centralWidget = new QdvWidget();
-//            centralWidget = new PlantWidget();
             centralWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             mainLayout->insertWidget(0, centralWidget);
             connect(device, &BluetoohDevice::updateDatas, this, &RoomWidget::updateDatasQdv);
+
+            // Button widget
+            if(buttonWidget != nullptr)
+            {
+                delete buttonWidget;
+            }
+            buttonWidget = new QdvWidget();
+            buttonWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        }
+
+        if(buttonWidget != nullptr)
+        {
+            Q_EMIT roomButtonUpdate(buttonWidget);
         }
 
         device->startDeviceDiscovery();
@@ -153,8 +203,6 @@ void RoomWidget::createBluetoohDevice(const QString macAddress, const QString ty
         statusLabel->setText(temp);
     }
 }
-
-
 
 void RoomWidget::moduleAttachedSlot()
 {
@@ -169,15 +217,46 @@ void RoomWidget::moduleAttachedSlot()
 
 void RoomWidget::detachModuleSlot()
 {
+
     detachDeviceButton->setVisible(false);
 
     controlsLayout->removeWidget(detachDeviceButton);
     controlsLayout->insertWidget(0, attachDeviceButton);
     attachDeviceButton->setVisible(true);
 
+    if(centralWidget != nullptr)
+    {
+        mainLayout->removeWidget(centralWidget);
+        delete centralWidget;
+    }
+
+    if(buttonWidget != nullptr)
+    {
+        delete buttonWidget;
+    }
+
     deviceMac.clear();
     deviceName.clear();
-    delete device;
+    if(device != nullptr)
+    {
+        delete device;
+    }
+}
+
+void RoomWidget::deviceConnectionError(){
+    if(centralWidget != nullptr)
+    {
+        mainLayout->removeWidget(centralWidget);
+        delete centralWidget;
+    }
+
+    if(buttonWidget != nullptr)
+    {
+        delete buttonWidget;
+    }
+
+    deviceMac.clear();
+    deviceName.clear();
 }
 
 void RoomWidget::saveDeviceConfiguration()
@@ -200,6 +279,15 @@ void RoomWidget::updateDatasQdv(int temp, int press)
 {
     qobject_cast<QdvWidget*>(centralWidget)->setTemp(temp/10);
     qobject_cast<QdvWidget*>(centralWidget)->setPressure(press/100);
+
+    qobject_cast<QdvWidget*>(buttonWidget)->setTemp(temp/10);
+    qobject_cast<QdvWidget*>(buttonWidget)->setPressure(press/100);
+}
+
+void RoomWidget::updateDatasPlant(int waterLevel, int moisture)
+{
+    qobject_cast<PlantWidget*>(centralWidget)->setMoisture(waterLevel);
+    qobject_cast<PlantWidget*>(buttonWidget)->setMoisture(waterLevel);
 }
 
 void RoomWidget::updateBluetoothStatus(QString status)

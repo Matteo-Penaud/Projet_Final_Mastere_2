@@ -38,6 +38,11 @@ MainPage::MainPage(QStackedWidget *navigationStack, QWidget *parent)
     readSettings();
 }
 
+MainPage::~MainPage()
+{
+
+}
+
 void MainPage::readSettings()
 {
     QSettings settings;
@@ -55,30 +60,54 @@ void MainPage::readSettings()
     foreach(const QString &room, rooms)
     {
         settings.beginGroup(room);
+            qDebug() << settings.value(SETTINGS_ROOMS_NAME).toString();
             createNewWidget(settings.value(SETTINGS_ROOMS_NAME).toString());
         settings.endGroup();
     }
 }
 
+unsigned char MainPage::smallestRoomIdAvailable(void)
+{
+    QSettings settings;
+    unsigned char i = 0;
+
+    settings.beginGroup(SETTINGS_GROUP_ROOMS);
+        QStringList roomsId = settings.childKeys();
+        roomsId.sort();
+        for(i = 1; i < 7; i++)
+        {
+            if(roomsId.contains(QString::number(i)) == false)
+            {
+                break;
+            }
+        }
+    settings.endGroup();
+
+    qDebug() << "Room id available :" << i;
+    return i;
+}
+
 void MainPage::createNewWidget(const QString &roomName)
 {
+    unsigned char roomId = 0;
     if(this->widgetsList.length() < 6)
     {
         QString temp_name;
 
-        widget_count += 1;
-
         if(roomName != nullptr)
         {
+            roomId = roomName.split("ROOM")[1].toInt();
             temp_name = roomName;
         }
         else
         {
-            temp_name = "ROOM" + QString::number(widget_count);
+            roomId = smallestRoomIdAvailable();
+            temp_name = "ROOM" + QString::number(roomId);
         }
 
-        RoomPage *temp_room = new RoomPage(widget_count, this);
-        RoomAccessButton *temp_button = new RoomAccessButton(temp_room, this);
+        RoomPage *temp_room = new RoomPage(roomId, this);
+        RoomAccessButton *temp_button = new RoomAccessButton(temp_room, roomId, this);
+        connect(temp_button, &RoomAccessButton::roomRemoved, this, &MainPage::removeWidget);
         temp_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         connect(temp_room, &RoomPage::roomNameChanged, temp_button, &RoomAccessButton::setRoomName);
         this->widgetsList.append(temp_button);
@@ -101,4 +130,34 @@ void MainPage::createNewWidget(const QString &roomName)
     {
         emptyRooms->setVisible(false);
     }
+}
+
+void MainPage::removeWidget(void)
+{
+    RoomAccessButton *obj = qobject_cast<RoomAccessButton*>(sender());
+
+    for(unsigned char i = widgetsList.length()-1; i > widgetsList.indexOf(obj); i--)
+    {
+        if(widgetsList.at(i-1) != nullptr)
+        {
+            mainLayout->replaceWidget(widgetsList.at(i-1), widgetsList.at(i));
+        }
+    }
+
+    widgetsList.removeOne(obj);
+
+    if(widgetsList.empty())
+    {
+        emptyRooms->setVisible(true);
+    }
+
+    QSettings settings;
+    settings.remove(SETTINGS_GROUP_ROOMS);
+
+    settings.beginGroup(SETTINGS_GROUP_ROOMS);
+    for(unsigned char i=0; i < widgetsList.length(); i++)
+    {
+        settings.setValue(QString::number(i+1), widgetsList.at(i)->getRoom()->getRoomName());
+    }
+    settings.endGroup();
 }

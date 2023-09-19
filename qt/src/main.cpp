@@ -5,6 +5,7 @@
 #include <QTranslator>
 #include <QProxyStyle>
 #include "commons.h"
+#include "stdio.h"
 
 QString *logFileName;
 
@@ -44,6 +45,8 @@ void logMessageReceived(QtMsgType type, const QMessageLogContext &context, const
 
 int main(int argc, char *argv[])
 {
+    popen("killall xinput_calibrator", "r");
+
     QCoreApplication::setOrganizationName(ORGANISATION_NAME);
     QCoreApplication::setOrganizationDomain(ORGANISATION_DOMAINE);
     QCoreApplication::setApplicationName(APPLICATION_NAME);

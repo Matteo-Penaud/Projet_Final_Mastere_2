@@ -17,6 +17,7 @@ class MainPage : public QWidget
     Q_OBJECT
 public:
     explicit MainPage(QStackedWidget *navigationStack, QWidget *parent = nullptr);
+    ~MainPage();
 
 private:
     QGridLayout *mainLayout;
@@ -29,12 +30,14 @@ private:
     QStackedWidget *navigationStack;
 
     void readSettings();
+    unsigned char smallestRoomIdAvailable(void);
 
 signals:
     void updateRoomName(const QString &);
 
 private slots:
     void createNewWidget(const QString &roomName = nullptr);
+    void removeWidget(void);
 };
 
 #endif // MAINPAGE_H

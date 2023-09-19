@@ -21,10 +21,7 @@ class RoomWidget : public QWidget
 
 public:
     explicit RoomWidget(QString &roomName, QWidget *parent = nullptr);
-    ~RoomWidget(){
-        workerThread.quit();
-        workerThread.wait();
-    }
+    ~RoomWidget();
 
     QString getRoomName() const;
     void setRoomName(QString &newRoomName);
@@ -33,6 +30,7 @@ private:
     QVBoxLayout* mainLayout;
     QLabel* datasLabel;
     QWidget* centralWidget = nullptr;
+    QWidget* buttonWidget = nullptr;
 
     QLabel* statusLabel;
 
@@ -43,7 +41,7 @@ private:
     QString serviceUuid;
     QString characteristicUuid;
 
-    BluetoohDevice *device;
+    BluetoohDevice *device = nullptr;
 
     QVBoxLayout *controlsLayout;
 
@@ -55,16 +53,19 @@ private slots:
     void createBluetoohDevice(const QString macAddress = NULL, const QString type = NULL);
     void moduleAttachedSlot(void);
     void detachModuleSlot(void);
+    void deviceConnectionError(void);
 
     void saveDeviceConfiguration(void);
 
     void updateDatasQdv(int, int);
+    void updateDatasPlant(int, int);
     void updateBluetoothStatus(QString);
 
 //    bool deviceExists(void);
 
 signals:
     void nfcRead(void);
+    void roomButtonUpdate(QWidget*);
 
 };
 

@@ -179,6 +179,7 @@ void BluetoohDevice::connectToService(const QString &uuid)
         }
     }
 
+
     if (!m_service)
     {
         qWarning() << m_macAddress + " : Error : Unable to find seeked service";
@@ -216,6 +217,7 @@ void BluetoohDevice::connectToService(const QString &uuid)
 void BluetoohDevice::characteristicUpdated(const QLowEnergyCharacteristic &ch, const QByteArray &newValue)
 {
     auto cInfo = new CharacteristicInfo(ch);
+
     if(cInfo->getUuid() == m_characteristicUuid)
     {
         QString data = QString(cInfo->getValue());
@@ -287,10 +289,11 @@ void BluetoohDevice::deviceConnected()
 
 void BluetoohDevice::errorReceived(QLowEnergyController::Error /*error*/)
 {
-    QString temp = QString("Disconnected due to error : " + controller->errorString());
-    Q_EMIT changeStatus(temp);
-
+    QString temp = QString("Disconnected due to error :\n" + controller->errorString());
     qWarning() << m_macAddress + " : Error: " << controller->errorString();
+
+    Q_EMIT changeStatus(temp);
+    Q_EMIT deviceConnectionError();
 }
 
 void BluetoohDevice::deviceDisconnected()

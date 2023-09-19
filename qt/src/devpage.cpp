@@ -32,6 +32,8 @@ void DevPage::resetConfigurationSlot()
 {
     QSettings settings;
     settings.remove("");
+
+    Q_EMIT resetConfigSignal();
 }
 
 void DevPage::updateText()

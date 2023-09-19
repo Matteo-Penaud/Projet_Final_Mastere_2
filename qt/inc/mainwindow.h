@@ -62,6 +62,7 @@ public slots:
     void showMainPage(void);
     void showDevPage(void);
     void showTestsPage(void);
+    void resetConfig(void);
 
 };
 #endif // MAINWINDOW_H

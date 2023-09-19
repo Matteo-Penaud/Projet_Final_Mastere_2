@@ -12,7 +12,8 @@ class RoomAccessButton : public QPushButton
 {
     Q_OBJECT
 public:
-    explicit RoomAccessButton(RoomPage *room, QWidget *parent = nullptr);
+    explicit RoomAccessButton(RoomPage *room, unsigned char id, QWidget *parent = nullptr);
+    ~RoomAccessButton();
 
     RoomPage *getRoom() const;
     void setRoom(RoomPage *newRoom);
@@ -22,10 +23,12 @@ public:
 
 
 private:
+    bool isRemoving = false;
     RoomPage *room;
     QVBoxLayout *mainLayout;
 
     QLabel *roomName;
+    unsigned char id;
 
 private slots:
     void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
@@ -34,9 +37,11 @@ private slots:
 
 public slots:
     void setRoomName(QString newRoomName);
+    void updateCentralWidget(QWidget *centralWidget);
 
 signals:
     void longPressEvent();
+    void roomRemoved();
 
 };
 

@@ -15,6 +15,7 @@ class RoomName : public QWidget
 
 public:
     explicit RoomName(QString &roomName, QWidget *parent = nullptr);
+    ~RoomName();
 
 private:
     QHBoxLayout *mainLayout;
@@ -35,6 +36,7 @@ class RoomPage : public QWidget
     Q_OBJECT
 public:
     explicit RoomPage(int id, QWidget *parent = nullptr);
+    ~RoomPage();
 
     QString getRoomName() const;
 
@@ -54,9 +56,13 @@ private:
     RoomWidget *c;
 
     void settingsAddRoom();
+    void updateButtonWidgetSlot(QWidget*);
+
 
 signals:
     void roomNameChanged(QString roomName);
+
+    void updateButtonWidgetSignal(QWidget*);
 
 };
 

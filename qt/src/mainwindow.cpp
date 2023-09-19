@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(navigationStack);
 
     connect(mainPage, &MainPage::updateRoomName, statusBar, &StatusBar::updateRoomLabel);
+    connect(devPage, &DevPage::resetConfigSignal, this, &MainWindow::resetConfig);
 }
 
 MainWindow::~MainWindow()
@@ -115,6 +116,18 @@ void MainWindow::showDevPage()
 void MainWindow::showTestsPage()
 {
     navigationStack->setCurrentWidget(testsPage);
+}
+
+void MainWindow::resetConfig()
+{
+    navigationStack->removeWidget(mainPage);
+    delete mainPage;
+
+    mainPage = new MainPage(navigationStack, this);
+    mainPage->setStyleSheet("background-color: white");
+
+    navigationStack->addWidget(mainPage);
+    connect(mainPage, &MainPage::updateRoomName, statusBar, &StatusBar::updateRoomLabel);
 }
 
 void MainWindow::writeSettings()

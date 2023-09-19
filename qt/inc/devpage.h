@@ -25,6 +25,7 @@ private slots:
     void updateText(void);
 
 signals:
+    void resetConfigSignal(void);
 
 };
 

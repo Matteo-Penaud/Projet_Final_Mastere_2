@@ -1,4 +1,5 @@
 #include "settingspage.h"
+#include "stdio.h"
 
 SettingsPage::SettingsPage(QWidget *parent)
     : QWidget{parent}
@@ -6,7 +7,7 @@ SettingsPage::SettingsPage(QWidget *parent)
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QVBoxLayout* mainLayout = new QVBoxLayout();
-    mainLayout->setSpacing(0);
+    mainLayout->setSpacing(20);
     mainLayout->setMargin(this->width()/3);
     this->setLayout(mainLayout);
 
@@ -16,13 +17,22 @@ SettingsPage::SettingsPage(QWidget *parent)
 
     mainLayout->addWidget(bluetoothToggle);
 
+    screenCalibrationButton = new QPushButton("Screen Calibration", this);
+    connect(screenCalibrationButton, &QPushButton::clicked, this, &SettingsPage::screenCalibration);
+
+    mainLayout->addWidget(screenCalibrationButton);
+
     QWidget *spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     mainLayout->addWidget(spacer);
 
+    restartButton = new QPushButton("Restart UI", this);
+    restartButton->connect(restartButton, SIGNAL(clicked()), qApp, SLOT(quit()));
+    mainLayout->addWidget(restartButton);
+
     shutdownButton = new QPushButton("Shutdown", this);
-    shutdownButton->connect(shutdownButton, SIGNAL(clicked()), qApp, SLOT(quit()));
+    shutdownButton->connect(shutdownButton, SIGNAL(clicked()), this, SLOT(shutdown()));
 
     mainLayout->addWidget(shutdownButton);
 }
@@ -59,4 +69,20 @@ void SettingsPage::toggleBluetooth()
     }
 
     getBluetoothState();
+}
+
+void SettingsPage::screenCalibration()
+{
+    qDebug() << "Running screen calibration";
+#ifdef __arm__
+    popen("xinput_calibrator", "r");
+#endif
+}
+
+void SettingsPage::shutdown()
+{
+#ifdef __arm__
+    popen("shutdown 0", "r");
+#endif
+    QApplication::quit();
 }

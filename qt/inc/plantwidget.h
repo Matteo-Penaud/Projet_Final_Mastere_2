@@ -11,7 +11,11 @@ class PlantWidget : public QWidget
 public:
     explicit PlantWidget(QWidget *parent = nullptr);
 
+    void setMoisture(int newMoisture);
+
 private:
+    int moisture = 0;
+
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);
 
@@ -19,4 +23,4 @@ signals:
 
 };
 
-#endif // PLANTWIDGET_H
+#endif // PLANTWIDGET_H C5:8A:75:E8:11:34

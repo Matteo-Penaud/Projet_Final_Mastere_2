@@ -16,12 +16,17 @@ public:
 
 private:
     QPushButton* bluetoothToggle;
+    QPushButton* screenCalibrationButton;
+    QPushButton* restartButton;
     QPushButton* shutdownButton;
 
     void getBluetoothState(void);
 
 private slots:
     void toggleBluetooth(void);
+    void screenCalibration(void);
+
+    void shutdown(void);
 
 };
 

@@ -25,6 +25,11 @@ RoomName::RoomName(QString &roomName, QWidget *parent)
     connect(roomLabel, &QLineEdit::returnPressed, this, &RoomName::saveRoomName);
 }
 
+RoomName::~RoomName()
+{
+
+}
+
 void RoomName::enableEdition()
 {
     roomLabel->setReadOnly(false);
@@ -72,7 +77,16 @@ RoomPage::RoomPage(int id, QWidget *parent)
     devicesLayout->addWidget(b);
     devicesLayout->addWidget(c);
 
+    connect(a, &RoomWidget::roomButtonUpdate, this, &RoomPage::updateButtonWidgetSlot);
+
     settingsAddRoom();
+}
+
+RoomPage::~RoomPage()
+{
+    delete a;
+    delete b;
+    delete c;
 }
 
 QString RoomPage::getRoomName() const
@@ -102,4 +116,9 @@ void RoomPage::settingsAddRoom()
     settings.beginGroup("ROOM" + QString::number(id));
     settings.setValue("name", roomName);
     settings.endGroup();
+}
+
+void RoomPage::updateButtonWidgetSlot(QWidget *w)
+{
+    Q_EMIT updateButtonWidgetSignal(w);
 }

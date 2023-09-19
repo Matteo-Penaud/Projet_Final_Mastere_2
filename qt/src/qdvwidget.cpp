@@ -10,7 +10,7 @@ QdvWidget::QdvWidget(QWidget *parent)
 
 void QdvWidget::setTemp(int newTemp)
 {
-    temperature = newTemp -7;
+    temperature = newTemp;
     update();
 }
 
@@ -72,6 +72,10 @@ void QdvWidget::paintEvent(QPaintEvent *e)
     int origin_y = (height() - r)/ 2;
 
     painter.drawEllipse(origin_x, origin_y, r, r);
+
+    int pixmap_size = 24;
+    QPixmap leaf(":/icons/fontawesome/solid/cloud-sun.svg");
+    painter.drawPixmap(origin_x + (r/2) - (pixmap_size/2), origin_y + r - pixmap_size*2, pixmap_size, pixmap_size, leaf);
 
     QFont font = painter.font();
     font.setBold(true);

@@ -70,6 +70,8 @@ signals:
 
     void deviceConnectedSignal(void);
     void deviceDisconnectedSignal(void);
+
+    void deviceConnectionError(void);
 };
 
 #endif // BLUETOOHDEVICE_H

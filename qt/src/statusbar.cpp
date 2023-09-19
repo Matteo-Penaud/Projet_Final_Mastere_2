@@ -35,7 +35,7 @@ StatusBar::StatusBar(QWidget *parent)
     bluetoothAction = new QAction(QIcon::fromTheme("bluetooth-b"), NULL, this);
     bluetoothAction->connect(bluetoothAction, SIGNAL(triggered()), this->parent(), SLOT(showBluetoothManager()));
 
-    notificationAction = new QAction(QIcon::fromTheme("bell"), NULL, this);
+//    notificationAction = new QAction(QIcon::fromTheme("bell"), NULL, this);
 
     settingsAction = new QAction(QIcon::fromTheme("cog"), NULL, this);
     settingsAction->connect(settingsAction, SIGNAL(triggered()), this->parent(), SLOT(showSettingsPage()));
@@ -52,7 +52,7 @@ StatusBar::StatusBar(QWidget *parent)
 #endif
     addAction(devAction);
     addAction(bluetoothAction);
-    addAction(notificationAction);
+//    addAction(notificationAction);
     addAction(settingsAction);
 }
 
