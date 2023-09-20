@@ -1,6 +1,7 @@
 #include "settingspage.h"
 #include "stdio.h"
 
+
 SettingsPage::SettingsPage(QWidget *parent)
     : QWidget{parent}
 {
@@ -27,14 +28,16 @@ SettingsPage::SettingsPage(QWidget *parent)
 
     mainLayout->addWidget(spacer);
 
-    restartButton = new QPushButton("Restart UI", this);
-    restartButton->connect(restartButton, SIGNAL(clicked()), qApp, SLOT(quit()));
-    mainLayout->addWidget(restartButton);
+//    restartButton = new QPushButton("Restart UI", this);
+//    restartButton->connect(restartButton, SIGNAL(clicked()), qApp, SLOT(quit()));
+//    mainLayout->addWidget(restartButton);
 
     shutdownButton = new QPushButton("Shutdown", this);
     shutdownButton->connect(shutdownButton, SIGNAL(clicked()), this, SLOT(shutdown()));
-
     mainLayout->addWidget(shutdownButton);
+
+    version = new QLabel("V2.16");
+    mainLayout->addWidget(version);
 }
 
 void SettingsPage::getBluetoothState()

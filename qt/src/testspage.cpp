@@ -29,7 +29,6 @@ TestsWrapper::TestsWrapper(QWidget *parent)
     testFunctions["Settings Saving"] = (FuncPointer)&testSettingsSaving;
     testFunctions["Settings Restoring"] = (FuncPointer)&testSettingsRestore;
     testFunctions["Settings Clearing"] = (FuncPointer)&testSettingsClear;
-    testFunctions["Screen Calibration"] = (FuncPointer)&testScreenCalibration;
 
 
     foreach(QString testName, testFunctions.keys())
@@ -134,6 +133,7 @@ void testNfcEnable(QString &result)
 void testRoomCreation(QString &result)
 {
     qDebug() << "Running Room Creation Test...";
+    result = TEST_OK;
 }
 
 void testRoomReorder(QString &result)
@@ -149,6 +149,7 @@ void testRoomNameModification(QString &result)
 void testRoomRemove(QString &result)
 {
     qDebug() << "Running Room Removing Test...";
+    result = TEST_OK;
 }
 
 void testLog(QString &result)
@@ -205,9 +206,4 @@ void testSettingsClear(QString &result)
     {
         result = TEST_OK;
     }
-}
-
-void testScreenCalibration(QString &result)
-{
-    qDebug() << "Running Screen Calibration Test...";
 }

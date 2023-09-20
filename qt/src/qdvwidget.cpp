@@ -8,6 +8,11 @@ QdvWidget::QdvWidget(QWidget *parent)
 
 }
 
+QdvWidget::~QdvWidget()
+{
+
+}
+
 void QdvWidget::setTemp(int newTemp)
 {
     temperature = newTemp;
@@ -102,7 +107,7 @@ void QdvWidget::paintEvent(QPaintEvent *e)
     double Pv = humidite_relative * Pvs;
     humidity = (Pv / pressure) * 10000.0; //VALEUR HUMIDITE DANS L'AIR
     QString humText;
-    humText.sprintf("%.2f%", humidity);
+    humText.sprintf("%.2f%", humidity/1.5);
     painter.drawText(QRect(origin_x, origin_y+((2*r)/3), r, r/3), Qt::AlignHCenter | Qt::AlignTop, humText);
 
     painter.end();

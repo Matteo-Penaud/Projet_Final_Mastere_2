@@ -20,13 +20,18 @@ class RoomWidget : public QWidget
     QThread workerThread;
 
 public:
-    explicit RoomWidget(QString &roomName, QWidget *parent = nullptr);
+    explicit RoomWidget(QString &roomName, unsigned char position = 0, QWidget *parent = nullptr);
     ~RoomWidget();
 
     QString getRoomName() const;
     void setRoomName(QString &newRoomName);
 
 private:
+    bool isConnecting = false;
+
+    QString roomName;
+    unsigned char position;
+
     QVBoxLayout* mainLayout;
     QLabel* datasLabel;
     QWidget* centralWidget = nullptr;
@@ -34,10 +39,10 @@ private:
 
     QLabel* statusLabel;
 
-    QString roomName;
 
     QString deviceMac;
     QString deviceName;
+    QString deviceType;
     QString serviceUuid;
     QString characteristicUuid;
 
@@ -48,12 +53,17 @@ private:
     QPushButton *attachDeviceButton;
     QPushButton *detachDeviceButton;
 
+    unsigned char reconnectAttempts = 0;
+
+    NfcThread *worker = nullptr;
+
+public slots:
+    void createBluetoohDevice(const QString macAddress = NULL, const QString type = NULL);
+
 private slots:
     void attachModuleSlot(void);
-    void createBluetoohDevice(const QString macAddress = NULL, const QString type = NULL);
     void moduleAttachedSlot(void);
-    void detachModuleSlot(void);
-    void deviceConnectionError(void);
+    void deviceDisconnect(void);
 
     void saveDeviceConfiguration(void);
 

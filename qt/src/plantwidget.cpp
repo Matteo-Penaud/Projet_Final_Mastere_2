@@ -7,6 +7,11 @@ PlantWidget::PlantWidget(QWidget *parent)
 
 }
 
+PlantWidget::~PlantWidget()
+{
+
+}
+
 void PlantWidget::setMoisture(int newMoisture)
 {
     moisture = newMoisture;
@@ -20,8 +25,6 @@ void PlantWidget::resizeEvent(QResizeEvent *e)
 
 void PlantWidget::paintEvent(QPaintEvent *e)
 {
-    qDebug() << size();
-
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -34,7 +37,15 @@ void PlantWidget::paintEvent(QPaintEvent *e)
 
     QPen pen;
     pen.setWidth(10);
-    pen.setColor(QColor(98, 218, 81));
+
+    if((float)moisture/1400 <= 1400 * 0.2)
+    {
+        pen.setColor(QColor(231, 5, 5));
+    }
+    else
+    {
+        pen.setColor(QColor(98, 218, 81));
+    }
 
     painter.setPen(pen);
 
@@ -75,7 +86,7 @@ void PlantWidget::paintEvent(QPaintEvent *e)
     font.setBold(false);
     font.setPointSize(15);
     painter.setFont(font);
-    painter.drawText(QRect(origin_x, origin_y+(r/5), r, r/2), Qt::AlignHCenter | Qt::AlignBottom, "Good");
+    painter.drawText(QRect(origin_x, origin_y+(r/5), r, r/2), Qt::AlignHCenter | Qt::AlignBottom, "Bad");
 
     painter.end();
 }

@@ -10,6 +10,7 @@ class PlantWidget : public QWidget
     Q_OBJECT
 public:
     explicit PlantWidget(QWidget *parent = nullptr);
+    ~PlantWidget();
 
     void setMoisture(int newMoisture);
 

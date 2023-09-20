@@ -10,6 +10,7 @@ class QdvWidget : public QWidget
     Q_OBJECT
 public:
     explicit QdvWidget(QWidget *parent = nullptr);
+    ~QdvWidget();
 
     void setTemp(int newTemp);
 

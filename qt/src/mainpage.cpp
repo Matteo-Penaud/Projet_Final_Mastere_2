@@ -74,7 +74,7 @@ unsigned char MainPage::smallestRoomIdAvailable(void)
     settings.beginGroup(SETTINGS_GROUP_ROOMS);
         QStringList roomsId = settings.childKeys();
         roomsId.sort();
-        for(i = 1; i < 7; i++)
+        for(i = 1; i < 6; i++)
         {
             if(roomsId.contains(QString::number(i)) == false)
             {
@@ -83,7 +83,7 @@ unsigned char MainPage::smallestRoomIdAvailable(void)
         }
     settings.endGroup();
 
-    qDebug() << "Room id available :" << i;
+//    qDebug() << "Room id available :" << i;
     return i;
 }
 
@@ -124,6 +124,8 @@ void MainPage::createNewWidget(const QString &roomName)
                               (this->widgetsList.length()-1)%3);
 
         this->addWidgetButton->raise();
+
+        temp_room->restoreSettings();
     }
 
     if(widgetsList.length() > 0)

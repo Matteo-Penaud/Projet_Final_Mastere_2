@@ -7,6 +7,7 @@ StatusBar::StatusBar(QWidget *parent)
     setMovable(IS_MOVABLE);
     setAllowedAreas(Qt::TopToolBarArea);
     setContextMenuPolicy(Qt::PreventContextMenu);
+    setIconSize(QSize(30, 30));
 
     spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

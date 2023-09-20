@@ -63,9 +63,9 @@ RoomPage::RoomPage(int id, QWidget *parent)
     roomLabel = new RoomName(roomName, this);
     connect(roomLabel, &RoomName::roomNameChanged, this, &RoomPage::setRoomName);
 
-    a = new RoomWidget(roomName, this);
-    b = new RoomWidget(roomName, this);
-    c = new RoomWidget(roomName, this);
+    a = new RoomWidget(roomName, 0, this);
+    b = new RoomWidget(roomName, 1, this);
+    c = new RoomWidget(roomName, 2, this);
 
     mainLayout = new QVBoxLayout(this);
     devicesLayout = new QHBoxLayout();
@@ -80,6 +80,8 @@ RoomPage::RoomPage(int id, QWidget *parent)
     connect(a, &RoomWidget::roomButtonUpdate, this, &RoomPage::updateButtonWidgetSlot);
 
     settingsAddRoom();
+
+    // F4:62:8E:A0:EC:F9
 }
 
 RoomPage::~RoomPage()
@@ -87,6 +89,36 @@ RoomPage::~RoomPage()
     delete a;
     delete b;
     delete c;
+}
+
+void RoomPage::restoreSettings(void)
+{
+    QSettings settings;
+    settings.beginGroup("ROOM" + QString::number(id));
+    settings.beginGroup(SETTINGS_DEVICES_GROUP);
+    if(settings.contains(QString::number(0)))
+    {
+        QString mac = settings.value(QString::number(0)).toString();
+        settings.beginGroup(mac);
+        a->createBluetoohDevice(mac, settings.value("type").toString());
+        settings.endGroup();
+    }
+    if(settings.contains(QString::number(1)))
+    {
+        QString mac = settings.value(QString::number(1)).toString();
+        settings.beginGroup(mac);
+        b->createBluetoohDevice(mac, settings.value("type").toString());
+        settings.endGroup();
+    }
+    if(settings.contains(QString::number(2)))
+    {
+        QString mac = settings.value(QString::number(2)).toString();
+        settings.beginGroup(mac);
+        c->createBluetoohDevice(mac, settings.value("type").toString());
+        settings.endGroup();
+    }
+    settings.endGroup();
+    settings.endGroup();
 }
 
 QString RoomPage::getRoomName() const

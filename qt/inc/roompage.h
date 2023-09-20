@@ -40,6 +40,9 @@ public:
 
     QString getRoomName() const;
 
+public slots:
+    void restoreSettings(void);
+
 private slots:
     void setRoomName(const QString &newRoomName);
 

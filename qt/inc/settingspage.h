@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QBluetoothLocalDevice>
 #include <QApplication>
+#include <QLabel>
 #include "commons.h"
 
 class SettingsPage : public QWidget
@@ -17,8 +18,9 @@ public:
 private:
     QPushButton* bluetoothToggle;
     QPushButton* screenCalibrationButton;
-    QPushButton* restartButton;
+//    QPushButton* restartButton;
     QPushButton* shutdownButton;
+    QLabel* version;
 
     void getBluetoothState(void);
 

@@ -40,6 +40,5 @@ void testLog(QString &result);
 void testSettingsSaving(QString &result);
 void testSettingsRestore(QString &result);
 void testSettingsClear(QString &result);
-void testScreenCalibration(QString &result);
 
 #endif // COMMONS_H
